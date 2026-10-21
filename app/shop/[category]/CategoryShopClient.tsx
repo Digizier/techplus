@@ -128,7 +128,7 @@ export default function CategoryShopClient({ categorySlug }: { categorySlug: str
 
       {/* 4. Products Grid (Strictly 8 items per page) */}
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
           {Array(8)
             .fill(0)
             .map((_, i) => (
@@ -150,7 +150,7 @@ export default function CategoryShopClient({ categorySlug }: { categorySlug: str
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

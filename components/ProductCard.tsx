@@ -46,18 +46,18 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-100 hover:border-brand-300 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden relative">
+    <div className="group bg-white rounded-xl sm:rounded-2xl border border-slate-100 hover:border-brand-300 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between overflow-hidden relative h-full">
       {/* Discount Badge */}
       {hasDiscount && (
-        <span className="absolute top-3 left-3 z-10 bg-red-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm tracking-wide">
+        <span className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10 bg-red-600 text-white text-[9px] sm:text-[11px] font-black px-1.5 sm:px-2 py-0.5 rounded-full shadow-2xs tracking-tight">
           SAVE {discountPercent}%
         </span>
       )}
 
-      {/* Product Image with Flash Effect Loading */}
+      {/* Product Image */}
       <Link
         href={`/product/${product.slug}`}
-        className="relative w-full aspect-square bg-slate-50 flex items-center justify-center p-4 overflow-hidden block"
+        className="relative w-full h-32 sm:h-40 md:h-48 bg-slate-50 flex items-center justify-center p-2.5 sm:p-3.5 md:p-4 overflow-hidden block shrink-0"
       >
         {!imageLoaded && (
           <div className="absolute inset-0 bg-slate-100 overflow-hidden">
@@ -69,61 +69,61 @@ export default function ProductCard({ product }: ProductCardProps) {
           alt={product.title}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
-          className={`max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-500 ${
+          className={`max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
         />
       </Link>
 
       {/* Product Details */}
-      <div className="p-4 flex flex-col flex-grow justify-between">
+      <div className="p-2.5 sm:p-3.5 md:p-4 flex flex-col flex-grow justify-between">
         <div>
-          <div className="flex items-center justify-between text-xs text-slate-400 mb-1.5 font-medium">
-            <span className="truncate uppercase tracking-wider text-[10px] bg-slate-100 px-2 py-0.5 rounded text-slate-600">
+          <div className="flex items-center justify-between text-[10px] sm:text-xs text-slate-400 mb-1 font-medium">
+            <span className="truncate uppercase tracking-wider text-[9px] sm:text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-semibold max-w-[85px] sm:max-w-[110px]">
               {product.category?.name || 'Tools'}
             </span>
-            <span className="flex items-center gap-1 text-emerald-600 font-semibold">
-              <CheckCircle2 className="w-3 h-3" /> In Stock
+            <span className="flex items-center gap-0.5 sm:gap-1 text-emerald-600 font-bold text-[9px] sm:text-[11px] shrink-0">
+              <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" /> In Stock
             </span>
           </div>
 
           <Link href={`/product/${product.slug}`} className="block">
-            <h3 className="font-bold text-slate-900 text-sm md:text-base line-clamp-2 group-hover:text-brand-600 transition-colors leading-snug">
+            <h3 className="font-bold text-slate-900 text-xs sm:text-sm line-clamp-2 group-hover:text-brand-600 transition-colors leading-tight h-8 sm:h-9">
               {product.title}
             </h3>
           </Link>
         </div>
 
         {/* Pricing & CTA */}
-        <div className="pt-3 border-t border-slate-100 mt-3">
-          <div className="flex items-baseline gap-2 mb-3">
-            <span className="text-lg md:text-xl font-extrabold text-slate-900">
+        <div className="pt-2 sm:pt-2.5 border-t border-slate-100 mt-2 sm:mt-2.5">
+          <div className="flex items-baseline gap-1.5 mb-2 sm:mb-2.5">
+            <span className="text-sm sm:text-base md:text-lg font-black text-slate-900 tracking-tight">
               Rs. {product.price.toLocaleString()}
             </span>
             {hasDiscount && (
-              <span className="text-xs md:text-sm text-slate-400 line-through">
+              <span className="text-[10px] sm:text-xs text-slate-400 line-through">
                 Rs. {product.regular_price!.toLocaleString()}
               </span>
             )}
           </div>
 
           {/* Action Buttons: Add to Cart & Buy Now */}
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-1.5">
             <button
               type="button"
               onClick={handleAddToCart}
-              className="w-full flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border border-slate-200 hover:border-slate-800 text-slate-800 hover:text-slate-900 font-semibold text-xs transition-colors bg-white hover:bg-slate-50"
+              className="w-full flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg border border-slate-200 hover:border-slate-800 text-slate-800 hover:text-slate-900 font-bold text-[10px] sm:text-xs transition-colors bg-white hover:bg-slate-50"
             >
-              <ShoppingCart className="w-3.5 h-3.5" />
+              <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               <span>{isAdding ? 'Added!' : 'Cart'}</span>
             </button>
 
             <button
               type="button"
               onClick={handleBuyNow}
-              className="w-full flex items-center justify-center gap-1 py-2 px-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs shadow-sm hover:shadow transition-all"
+              className="w-full flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-slate-950 font-black text-[10px] sm:text-xs shadow-2xs hover:shadow-xs transition-all"
             >
-              <Zap className="w-3.5 h-3.5 fill-current" />
+              <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
               <span>Buy Now</span>
             </button>
           </div>

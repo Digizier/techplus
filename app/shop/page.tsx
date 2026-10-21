@@ -200,7 +200,7 @@ function ShopContent() {
         {/* Products Grid (3 columns on Desktop, 2 on Mobile) */}
         <div className="lg:col-span-3 space-y-8">
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6">
               {Array(8)
                 .fill(0)
                 .map((_, i) => (
@@ -223,7 +223,7 @@ function ShopContent() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4 md:gap-6">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
