@@ -35,3 +35,4 @@ next-env.d.ts
 # reference data & scratch
 REFERENCE DATA/
 extract*.json
+scripts/check-db.js
