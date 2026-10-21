@@ -45,12 +45,25 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
           data.thumbnail_url || (data.images && data.images[0]) || '';
         setSelectedImage(initialImg);
 
-        // Fetch related products from same category
-        const relatedRes = await getProducts({
-          limit: 4,
-          categoryId: data.category_id || undefined,
-        });
-        setRelatedProducts(relatedRes.products.filter((p) => p.id !== data.id));
+        // Fetch related products from same category (reliably 4 items)
+        let relatedList: Product[] = [];
+        if (data.category_id) {
+          const relatedRes = await getProducts({
+            limit: 6,
+            categoryId: data.category_id,
+          });
+          relatedList = relatedRes.products.filter((p) => p.id !== data.id);
+        }
+
+        // If fewer than 4 related items, backfill with top products
+        if (relatedList.length < 4) {
+          const fallbackRes = await getProducts({ limit: 6, sortBy: 'newest' });
+          const existingIds = new Set([data.id, ...relatedList.map((p) => p.id)]);
+          const backfill = fallbackRes.products.filter((p) => !existingIds.has(p.id));
+          relatedList = [...relatedList, ...backfill];
+        }
+
+        setRelatedProducts(relatedList.slice(0, 4));
       }
       setLoading(false);
     }
@@ -209,13 +222,6 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
               </span>
             )}
           </div>
-
-          {/* Short Description */}
-          {product.short_description && (
-            <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
-              {product.short_description}
-            </p>
-          )}
 
           {/* Quantity Selector */}
           <div className="flex items-center gap-4 pt-2">

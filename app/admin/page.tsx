@@ -155,6 +155,7 @@ export default function AdminPage() {
 
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [isUploadingCatImage, setIsUploadingCatImage] = useState(false);
 
   const [editingBanner, setEditingBanner] = useState<Partial<Banner> | null>(null);
   const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
@@ -225,17 +226,25 @@ export default function AdminPage() {
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/(^-|-$)+/g, '');
 
+      const images = (editingProduct.images || []).filter(Boolean);
+      const thumbnail_url = editingProduct.thumbnail_url || (images[0] || '');
+
       const payload: Partial<Product> = {
-        ...editingProduct,
+        title: editingProduct.title,
         slug,
+        sku: editingProduct.sku || null,
         price: Number(editingProduct.price),
         regular_price: editingProduct.regular_price
           ? Number(editingProduct.regular_price)
           : Number(editingProduct.price),
         stock: Number(editingProduct.stock || 10),
-        images: editingProduct.images || [],
-        thumbnail_url: editingProduct.thumbnail_url || (editingProduct.images?.[0] || ''),
+        category_id: editingProduct.category_id || null,
+        thumbnail_url,
+        images,
+        short_description: editingProduct.short_description || null,
+        description: editingProduct.description || null,
         is_active: editingProduct.is_active !== undefined ? editingProduct.is_active : true,
+        is_featured: Boolean(editingProduct.is_featured),
       };
 
       if (editingProduct.id) {
@@ -289,7 +298,7 @@ export default function AdminPage() {
         const newImages = [...currentImages, ...uploadedUrls];
         return {
           ...prev,
-          thumbnail_url: prev?.thumbnail_url || newImages[0],
+          thumbnail_url: prev?.thumbnail_url || newImages[0] || '',
           images: newImages,
         };
       });
@@ -297,6 +306,7 @@ export default function AdminPage() {
       alert(`Image upload error: ${err.message}`);
     } finally {
       setIsUploadingImage(false);
+      e.target.value = '';
     }
   };
 
@@ -305,7 +315,7 @@ export default function AdminPage() {
       const updated = (prev?.images || []).filter((img) => img !== urlToRemove);
       return {
         ...prev,
-        thumbnail_url: prev?.thumbnail_url === urlToRemove ? (updated[0] || '') : prev?.thumbnail_url,
+        thumbnail_url: prev?.thumbnail_url === urlToRemove ? (updated[0] || '') : (prev?.thumbnail_url || ''),
         images: updated,
       };
     });
@@ -330,6 +340,7 @@ export default function AdminPage() {
         ...editingCategory,
         slug,
         parent_id: editingCategory.parent_id || null,
+        image_url: editingCategory.image_url || null,
         display_order: Number(editingCategory.display_order || 1),
         is_active: editingCategory.is_active !== undefined ? editingCategory.is_active : true,
         show_on_home: editingCategory.show_on_home !== undefined ? editingCategory.show_on_home : true,
@@ -346,6 +357,25 @@ export default function AdminPage() {
       loadAllData();
     } catch (err: any) {
       alert(`Error saving category: ${err.message}`);
+    }
+  };
+
+  const handleCategoryImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingCatImage(true);
+    try {
+      const cdnUrl = await compressAndUploadImage(file, 'site-assets', 400, 400);
+      setEditingCategory((prev) => ({
+        ...prev,
+        image_url: cdnUrl,
+      }));
+    } catch (err: any) {
+      alert(`Category image upload error: ${err.message}`);
+    } finally {
+      setIsUploadingCatImage(false);
+      e.target.value = '';
     }
   };
 
@@ -622,9 +652,9 @@ export default function AdminPage() {
   const pendingOrdersCount = orders.filter((o) => o.order_status === 'Pending').length;
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col md:flex-row text-slate-900 font-sans">
+    <div className="h-screen bg-slate-100 flex flex-col md:flex-row text-slate-900 font-sans overflow-hidden">
       {/* 1. Dedicated Admin Sidebar (No public header/footer) */}
-      <aside className="w-full md:w-64 bg-slate-950 text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800">
+      <aside className="w-full md:w-64 md:h-screen md:sticky md:top-0 bg-slate-950 text-slate-300 flex flex-col justify-between shrink-0 border-r border-slate-800 overflow-y-auto z-20">
         <div>
           {/* Brand Logo & Portal Tag */}
           <div className="p-6 border-b border-slate-800/80 flex items-center justify-between">
@@ -787,7 +817,7 @@ export default function AdminPage() {
       </aside>
 
       {/* 2. Admin Content Area */}
-      <main className="flex-1 flex flex-col overflow-y-auto">
+      <main className="flex-1 h-screen flex flex-col overflow-y-auto">
         {/* Top bar */}
         <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-2xs">
           <div>
@@ -959,9 +989,13 @@ export default function AdminPage() {
                       price: 1999,
                       regular_price: 2500,
                       stock: 10,
+                      category_id: categories[0]?.id || '',
                       is_active: true,
                       is_featured: false,
+                      thumbnail_url: '',
                       images: [],
+                      description: '',
+                      short_description: '',
                     });
                     setIsProductModalOpen(true);
                   }}
@@ -1032,21 +1066,38 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td className="p-4">
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                                p.is_active
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : 'bg-slate-100 text-slate-500'
-                              }`}
-                            >
-                              {p.is_active ? 'Active' : 'Draft'}
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                  p.is_active
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : 'bg-slate-100 text-slate-500'
+                                }`}
+                              >
+                                {p.is_active ? 'Active' : 'Draft'}
+                              </span>
+                              {p.is_featured && (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-100 text-amber-800 border border-amber-200">
+                                  ★ Spotlight
+                                </span>
+                              )}
+                            </div>
                           </td>
                           <td className="p-4 text-right space-x-2">
                             <button
                               type="button"
                               onClick={() => {
-                                setEditingProduct(p);
+                                const images = Array.isArray(p.images) && p.images.length > 0
+                                  ? p.images
+                                  : (p.thumbnail_url ? [p.thumbnail_url] : []);
+                                setEditingProduct({
+                                  ...p,
+                                  images,
+                                  thumbnail_url: p.thumbnail_url || (images[0] || ''),
+                                  description: p.description || '',
+                                  short_description: p.short_description || '',
+                                  is_featured: Boolean(p.is_featured),
+                                });
                                 setIsProductModalOpen(true);
                               }}
                               className="p-1.5 text-slate-600 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition-colors"
@@ -1109,33 +1160,44 @@ export default function AdminPage() {
                     className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4"
                   >
                     <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold text-brand-600 uppercase tracking-wider">
-                            Parent Category
-                          </span>
-                          {!cat.parent_id && (
-                            <button
-                              type="button"
-                              onClick={() => handleToggleShowOnHome(cat)}
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors ${
-                                cat.show_on_home !== false
-                                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                              }`}
-                              title="Click to toggle Top Categories display on homepage"
-                            >
-                              {cat.show_on_home !== false ? '✓ Home Top Category' : 'Hidden on Home'}
-                            </button>
-                          )}
+                      <div className="flex items-center gap-3">
+                        {cat.image_url ? (
+                          <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 p-1 flex items-center justify-center shrink-0 overflow-hidden">
+                            <img src={cat.image_url} alt="" className="max-w-full max-h-full object-contain" />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-brand-600 shrink-0">
+                            <Wrench className="w-6 h-6" />
+                          </div>
+                        )}
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-bold text-brand-600 uppercase tracking-wider">
+                              Parent Category
+                            </span>
+                            {!cat.parent_id && (
+                              <button
+                                type="button"
+                                onClick={() => handleToggleShowOnHome(cat)}
+                                className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors ${
+                                  cat.show_on_home !== false
+                                    ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                }`}
+                                title="Click to toggle Top Categories display on homepage"
+                              >
+                                {cat.show_on_home !== false ? '✓ Home Top Category' : 'Hidden on Home'}
+                              </button>
+                            )}
+                          </div>
+                          <h4 className="text-base font-extrabold text-slate-900 mt-0.5">
+                            {cat.name}
+                          </h4>
+                          <span className="text-xs font-mono text-slate-400">/{cat.slug}</span>
                         </div>
-                        <h4 className="text-base font-extrabold text-slate-900 mt-0.5">
-                          {cat.name}
-                        </h4>
-                        <span className="text-xs font-mono text-slate-400">/{cat.slug}</span>
                       </div>
 
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <button
                           type="button"
                           onClick={() => {
@@ -2063,22 +2125,70 @@ export default function AdminPage() {
 
                 {/* Uploaded Images Preview Grid */}
                 {editingProduct?.images && editingProduct.images.length > 0 && (
-                  <div className="flex flex-wrap gap-2.5 mt-3">
-                    {editingProduct.images.map((imgUrl, i) => (
-                      <div
-                        key={i}
-                        className="relative w-16 h-16 rounded-xl border border-slate-200 p-1 bg-slate-50 group"
-                      >
-                        <img src={imgUrl} alt="" className="w-full h-full object-contain" />
-                        <button
-                          type="button"
-                          onClick={() => removeProductImage(imgUrl)}
-                          className="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full p-0.5 shadow hover:bg-red-700"
-                        >
-                          <Trash2 className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
+                  <div className="space-y-2 mt-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                        Gallery ({editingProduct.images.length} images)
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        Select an image to set as main Cover
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5">
+                      {editingProduct.images.map((imgUrl, i) => {
+                        const isCover =
+                          editingProduct.thumbnail_url === imgUrl ||
+                          (!editingProduct.thumbnail_url && i === 0);
+                        return (
+                          <div
+                            key={i}
+                            className={`relative rounded-xl border-2 p-1.5 bg-slate-50 flex flex-col items-center justify-between transition-all ${
+                              isCover
+                                ? 'border-brand-500 ring-2 ring-brand-400/30 shadow-xs'
+                                : 'border-slate-200 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className="w-full aspect-square rounded-lg overflow-hidden flex items-center justify-center bg-white">
+                              <img
+                                src={imgUrl}
+                                alt=""
+                                className="max-w-full max-h-full object-contain"
+                              />
+                            </div>
+
+                            <div className="w-full mt-1.5 flex items-center justify-between gap-1">
+                              {isCover ? (
+                                <span className="text-[9px] font-black bg-brand-500 text-slate-950 px-1.5 py-0.5 rounded uppercase tracking-wider">
+                                  Cover
+                                </span>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setEditingProduct((prev) => ({
+                                      ...prev,
+                                      thumbnail_url: imgUrl,
+                                    }))
+                                  }
+                                  className="text-[9px] font-bold text-slate-600 hover:text-brand-600 bg-white hover:bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded transition-colors"
+                                >
+                                  Set Cover
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => removeProductImage(imgUrl)}
+                                className="text-slate-400 hover:text-red-600 p-1 hover:bg-red-50 rounded transition-colors"
+                                title="Delete image"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -2225,6 +2335,57 @@ export default function AdminPage() {
                 />
               </div>
 
+              {/* Category Image Upload */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Category Image / Icon (Auto WebP Compressed)
+                </label>
+                <div className="flex items-center gap-3.5 p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                  {editingCategory?.image_url ? (
+                    <div className="relative w-16 h-16 rounded-xl border border-brand-400 p-1 bg-white shrink-0 flex items-center justify-center overflow-hidden shadow-2xs">
+                      <img
+                        src={editingCategory.image_url}
+                        alt="Category Preview"
+                        className="max-h-full max-w-full object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setEditingCategory((prev) => ({ ...prev, image_url: null }))}
+                        className="absolute -top-1 -right-1 bg-red-600 text-white rounded-full p-0.5 shadow hover:bg-red-700 transition-colors"
+                        title="Remove category image"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 rounded-xl border-2 border-dashed border-slate-300 bg-white flex items-center justify-center text-slate-400 shrink-0">
+                      <Wrench className="w-6 h-6" />
+                    </div>
+                  )}
+
+                  <div className="flex-1 space-y-1">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCategoryImageUpload}
+                      disabled={isUploadingCatImage}
+                      className="hidden"
+                      id="category-image-file"
+                    />
+                    <label
+                      htmlFor="category-image-file"
+                      className="cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition-colors border border-slate-200 shadow-2xs"
+                    >
+                      <Upload className="w-3.5 h-3.5 text-brand-600" />
+                      <span>{isUploadingCatImage ? 'Compressing & Uploading...' : 'Upload Image'}</span>
+                    </label>
+                    <p className="text-[10px] text-slate-400">
+                      Shows in Homepage &quot;Explore Main Categories&quot; ticker (replaces wrench icon).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
               {!editingCategory?.parent_id && (
                 <div className="flex items-center gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl">
                   <input
@@ -2255,7 +2416,8 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
+                  disabled={isUploadingCatImage}
+                  className="px-5 py-2 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
                 >
                   Save Department
                 </button>

@@ -125,9 +125,18 @@ export default function HomePage() {
         setFeaturedProducts(productsRes.products);
         setTotalCount(productsRes.totalCount);
 
-        // Fetch products with discounts for Flash Sale section
-        const saleRes = await getProducts({ limit: 4, sortBy: 'price_desc' });
-        setDiscountProducts(saleRes.products);
+        // Fetch products for Flash Sale section: prioritize Admin "Featured on Homepage" products
+        let saleProducts: Product[] = [];
+        const featuredRes = await getProducts({ limit: 4, featuredOnly: true });
+        saleProducts = featuredRes.products;
+
+        if (saleProducts.length < 4) {
+          const fallbackRes = await getProducts({ limit: 4, sortBy: 'price_desc' });
+          const existingIds = new Set(saleProducts.map((p) => p.id));
+          const backfill = fallbackRes.products.filter((p) => !existingIds.has(p.id));
+          saleProducts = [...saleProducts, ...backfill].slice(0, 4);
+        }
+        setDiscountProducts(saleProducts);
       } catch (err) {
         console.error('Home load error:', err);
       } finally {
@@ -294,8 +303,17 @@ export default function HomePage() {
               href={`/shop/${cat.slug}`}
               className="w-[36vw] min-w-[125px] max-w-[150px] md:w-[195px] shrink-0 group bg-white p-3 md:p-4 rounded-2xl border border-slate-100 hover:border-brand-400 hover:shadow-md transition-all text-center flex flex-col items-center justify-between"
             >
-              <div className="w-11 h-11 md:w-13 md:h-13 rounded-xl md:rounded-2xl bg-amber-50 group-hover:bg-brand-500/10 flex items-center justify-center text-brand-600 mb-2 transition-colors">
-                <Wrench className="w-5 h-5 md:w-6 md:h-6" />
+              <div className="w-11 h-11 md:w-13 md:h-13 rounded-xl md:rounded-2xl bg-slate-50 group-hover:bg-brand-500/10 flex items-center justify-center text-brand-600 mb-2 transition-colors overflow-hidden border border-slate-100">
+                {cat.image_url ? (
+                  <img
+                    src={cat.image_url}
+                    alt={cat.name}
+                    className="w-full h-full object-contain p-1 group-hover:scale-110 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                ) : (
+                  <Wrench className="w-5 h-5 md:w-6 md:h-6" />
+                )}
               </div>
               <h3 className="font-bold text-xs md:text-sm text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-1 mb-0.5">
                 {cat.name}

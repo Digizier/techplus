@@ -2,7 +2,7 @@ import { supabase } from './supabase';
 import { Product, Category, Banner, Order, Coupon, SiteSettings, ServiceInquiry } from './types';
 
 // Lean column projections for optimal Supabase egress and sub-millisecond query latency
-const PRODUCT_LIST_COLUMNS = 'id, title, slug, sku, price, regular_price, stock, thumbnail_url, category_id, is_featured, is_active, created_at';
+const PRODUCT_LIST_COLUMNS = 'id, title, slug, sku, price, regular_price, stock, thumbnail_url, images, short_description, description, category_id, is_featured, is_active, created_at';
 const PRODUCT_DETAIL_COLUMNS = 'id, title, slug, sku, price, regular_price, stock, thumbnail_url, images, short_description, description, category_id, is_featured, is_active, created_at';
 
 // -------------------------------------------------------------
