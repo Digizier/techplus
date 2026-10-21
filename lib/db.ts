@@ -69,7 +69,14 @@ export async function getProducts(options: GetProductsOptions = {}): Promise<{ p
   }
 
   if (categoryId) {
-    query = query.eq('category_id', categoryId);
+    // Also include subcategory IDs if categoryId is a parent category
+    const { data: subCats } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('parent_id', categoryId);
+
+    const allCatIds = [categoryId, ...(subCats?.map((s) => s.id) || [])];
+    query = query.in('category_id', allCatIds);
   } else if (categorySlug) {
     // Resolve category id or subcategories
     const { data: catData } = await supabase
@@ -254,10 +261,50 @@ export async function getAllCategorySlugs(): Promise<string[]> {
   return data.map((c) => c.slug);
 }
 
+// Helper to ensure clean category columns and avoid schema errors (strips computed subcategories)
+function cleanCategoryPayload(payload: Partial<Category>) {
+  const clean: any = {
+    name: payload.name,
+    parent_id: payload.parent_id || null,
+    image_url: payload.image_url || null,
+    description: payload.description || null,
+    display_order: Number(payload.display_order || 1),
+    is_active: payload.is_active !== undefined ? payload.is_active : true,
+    show_on_home: payload.show_on_home !== undefined ? payload.show_on_home : true,
+  };
+  if (payload.slug) {
+    clean.slug = payload.slug;
+  }
+  return clean;
+}
+
+// Generate unique slug to avoid categories_slug_key constraint violation
+async function ensureUniqueCategorySlug(baseSlug: string, currentId?: string): Promise<string> {
+  let slug = baseSlug;
+  let counter = 1;
+  while (true) {
+    let query = supabase.from('categories').select('id').eq('slug', slug);
+    if (currentId) {
+      query = query.neq('id', currentId);
+    }
+    const { data } = await query.maybeSingle();
+    if (!data) {
+      return slug;
+    }
+    slug = `${baseSlug}-${counter}`;
+    counter++;
+  }
+}
+
 export async function createCategory(payload: Partial<Category>): Promise<Category | null> {
+  const clean = cleanCategoryPayload(payload);
+  if (clean.slug) {
+    clean.slug = await ensureUniqueCategorySlug(clean.slug);
+  }
+
   const { data, error } = await supabase
     .from('categories')
-    .insert([payload])
+    .insert([clean])
     .select()
     .single();
 
@@ -271,9 +318,14 @@ export async function createCategory(payload: Partial<Category>): Promise<Catego
 }
 
 export async function updateCategory(id: string, payload: Partial<Category>): Promise<Category | null> {
+  const clean = cleanCategoryPayload(payload);
+  if (clean.slug) {
+    clean.slug = await ensureUniqueCategorySlug(clean.slug, id);
+  }
+
   const { data, error } = await supabase
     .from('categories')
-    .update(payload)
+    .update(clean)
     .eq('id', id)
     .select()
     .single();
@@ -569,9 +621,10 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 }
 
 export async function updateSiteSettings(payload: Partial<SiteSettings>): Promise<SiteSettings> {
+  const { id, ...cleanPayload } = payload;
   const { data, error } = await supabase
     .from('site_settings')
-    .update({ ...payload, updated_at: new Date().toISOString() })
+    .update({ ...cleanPayload, updated_at: new Date().toISOString() })
     .eq('id', 1)
     .select()
     .single();

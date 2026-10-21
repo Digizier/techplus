@@ -20,6 +20,7 @@ export default function ContactUsPage() {
     name: '',
     phone: '',
     email: '',
+    city: 'Islamabad',
     subject: 'General Inquiry',
     message: '',
   });
@@ -37,9 +38,9 @@ export default function ContactUsPage() {
         customer_name: formData.name.trim(),
         customer_phone: formData.phone.trim(),
         service_type: `Contact Message: ${formData.subject}`,
-        city: 'Islamabad',
-        address: formData.email,
-        message: formData.message,
+        city: formData.city.trim() || 'Islamabad',
+        address: formData.email.trim() || '',
+        message: formData.message.trim(),
         status: 'New',
       });
       setSubmitted(true);
@@ -47,6 +48,7 @@ export default function ContactUsPage() {
         name: '',
         phone: '',
         email: '',
+        city: 'Islamabad',
         subject: 'General Inquiry',
         message: '',
       });
@@ -195,7 +197,7 @@ export default function ContactUsPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Email Address
@@ -205,6 +207,20 @@ export default function ContactUsPage() {
                     placeholder="name@email.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-hidden focus:border-brand-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    City / Location *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Islamabad / Rawalpindi / Lahore"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full px-3.5 py-2.5 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl text-xs font-medium focus:outline-hidden focus:border-brand-500"
                   />
                 </div>

@@ -174,6 +174,38 @@ export default function AdminPage() {
   // Settings Save Notification
   const [settingsSaved, setSettingsSaved] = useState(false);
 
+  // Custom Toast State (Zero Browser Alerts)
+  const [toast, setToast] = useState<{
+    show: boolean;
+    type: 'success' | 'error' | 'info';
+    message: string;
+  }>({
+    show: false,
+    type: 'success',
+    message: '',
+  });
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
+    setToast({ show: true, type, message });
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, show: false }));
+    }, 4500);
+  };
+
+  // Flat map of all categories and subcategories for accurate lookup in tables & select
+  const allCategoriesFlat = React.useMemo(() => {
+    const list: { id: string; name: string; parentName?: string; isSub: boolean }[] = [];
+    categories.forEach((cat) => {
+      list.push({ id: cat.id, name: cat.name, isSub: false });
+      if (cat.subcategories && cat.subcategories.length > 0) {
+        cat.subcategories.forEach((sub) => {
+          list.push({ id: sub.id, name: sub.name, parentName: cat.name, isSub: true });
+        });
+      }
+    });
+    return list;
+  }, [categories]);
+
   // Load all data
   const loadAllData = async () => {
     setLoading(true);
@@ -213,8 +245,8 @@ export default function AdminPage() {
   // -------------------------------------------------------------
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingProduct?.title || !editingProduct?.price) {
-      alert('Please fill out Product Title and Price.');
+    if (!editingProduct?.title?.trim() || editingProduct?.price === undefined || editingProduct?.price === null) {
+      showToast('Please fill out Product Title and Selling Price.', 'error');
       return;
     }
 
@@ -230,9 +262,9 @@ export default function AdminPage() {
       const thumbnail_url = editingProduct.thumbnail_url || (images[0] || '');
 
       const payload: Partial<Product> = {
-        title: editingProduct.title,
+        title: editingProduct.title.trim(),
         slug,
-        sku: editingProduct.sku || null,
+        sku: editingProduct.sku?.trim() || null,
         price: Number(editingProduct.price),
         regular_price: editingProduct.regular_price
           ? Number(editingProduct.regular_price)
@@ -249,15 +281,17 @@ export default function AdminPage() {
 
       if (editingProduct.id) {
         await updateProduct(editingProduct.id, payload);
+        showToast(`Product "${payload.title}" updated successfully!`, 'success');
       } else {
         await createProduct(payload);
+        showToast(`Product "${payload.title}" created successfully!`, 'success');
       }
 
       setIsProductModalOpen(false);
       setEditingProduct(null);
       loadAllData();
     } catch (err: any) {
-      alert(`Error saving product: ${err.message}`);
+      showToast(`Error saving product: ${err.message}`, 'error');
     }
   };
 
@@ -269,10 +303,11 @@ export default function AdminPage() {
       onConfirm: async () => {
         try {
           await deleteProduct(id);
+          showToast(`Product "${title}" deleted`, 'info');
           setConfirmModal((prev) => ({ ...prev, isOpen: false }));
           loadAllData();
         } catch (e: any) {
-          alert(`Failed to delete: ${e.message}`);
+          showToast(`Failed to delete: ${e.message}`, 'error');
         }
       },
     });
@@ -302,8 +337,9 @@ export default function AdminPage() {
           images: newImages,
         };
       });
+      showToast(`${files.length} image(s) compressed & uploaded!`, 'success');
     } catch (err: any) {
-      alert(`Image upload error: ${err.message}`);
+      showToast(`Image upload error: ${err.message}`, 'error');
     } finally {
       setIsUploadingImage(false);
       e.target.value = '';
@@ -326,7 +362,10 @@ export default function AdminPage() {
   // -------------------------------------------------------------
   const handleSaveCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingCategory?.name) return;
+    if (!editingCategory?.name?.trim()) {
+      showToast('Please enter a category name.', 'error');
+      return;
+    }
 
     try {
       const slug =
@@ -336,11 +375,13 @@ export default function AdminPage() {
           .replace(/[^a-z0-9]+/g, '-')
           .replace(/(^-|-$)+/g, '');
 
-      const payload = {
-        ...editingCategory,
+      // Explicitly pick ONLY category columns - never forward subcategories!
+      const payload: Partial<Category> = {
+        name: editingCategory.name.trim(),
         slug,
         parent_id: editingCategory.parent_id || null,
         image_url: editingCategory.image_url || null,
+        description: editingCategory.description?.trim() || null,
         display_order: Number(editingCategory.display_order || 1),
         is_active: editingCategory.is_active !== undefined ? editingCategory.is_active : true,
         show_on_home: editingCategory.show_on_home !== undefined ? editingCategory.show_on_home : true,
@@ -348,15 +389,17 @@ export default function AdminPage() {
 
       if (editingCategory.id) {
         await updateCategory(editingCategory.id, payload);
+        showToast(`Category "${payload.name}" updated successfully!`, 'success');
       } else {
         await createCategory(payload);
+        showToast(`Category "${payload.name}" created successfully!`, 'success');
       }
 
       setIsCategoryModalOpen(false);
       setEditingCategory(null);
       loadAllData();
     } catch (err: any) {
-      alert(`Error saving category: ${err.message}`);
+      showToast(`Error saving category: ${err.message}`, 'error');
     }
   };
 
@@ -371,8 +414,9 @@ export default function AdminPage() {
         ...prev,
         image_url: cdnUrl,
       }));
+      showToast('Category image uploaded and compressed!', 'success');
     } catch (err: any) {
-      alert(`Category image upload error: ${err.message}`);
+      showToast(`Category image upload error: ${err.message}`, 'error');
     } finally {
       setIsUploadingCatImage(false);
       e.target.value = '';
@@ -383,9 +427,10 @@ export default function AdminPage() {
     try {
       const nextVal = cat.show_on_home === false ? true : false;
       await updateCategory(cat.id, { show_on_home: nextVal });
+      showToast(nextVal ? 'Category displayed on Homepage ticker' : 'Category hidden from Homepage ticker', 'info');
       loadAllData();
     } catch (err: any) {
-      alert(`Failed to update top categories display: ${err.message}`);
+      showToast(`Failed to update top categories display: ${err.message}`, 'error');
     }
   };
 
@@ -397,10 +442,11 @@ export default function AdminPage() {
       onConfirm: async () => {
         try {
           await deleteCategory(id);
+          showToast(`Category "${name}" deleted`, 'info');
           setConfirmModal((prev) => ({ ...prev, isOpen: false }));
           loadAllData();
         } catch (e: any) {
-          alert(`Failed to delete category: ${e.message}`);
+          showToast(`Failed to delete category: ${e.message}`, 'error');
         }
       },
     });
@@ -421,9 +467,10 @@ export default function AdminPage() {
         ...(courier_name !== undefined ? { courier_name } : {}),
         ...(tracking_number !== undefined ? { tracking_number } : {}),
       });
+      showToast(`Order status updated to "${order_status}"`, 'success');
       loadAllData();
     } catch (err: any) {
-      alert(`Failed to update order: ${err.message}`);
+      showToast(`Failed to update order: ${err.message}`, 'error');
     }
   };
 
@@ -433,9 +480,14 @@ export default function AdminPage() {
       title: 'Delete Order Record',
       message: `Delete order #${orderNumber} from the records?`,
       onConfirm: async () => {
-        await deleteOrder(id);
-        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
-        loadAllData();
+        try {
+          await deleteOrder(id);
+          showToast(`Order #${orderNumber} deleted`, 'info');
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+          loadAllData();
+        } catch (err: any) {
+          showToast(`Failed to delete order: ${err.message}`, 'error');
+        }
       },
     });
   };
@@ -446,7 +498,7 @@ export default function AdminPage() {
   const handleSaveBanner = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingBanner?.desktop_image_url) {
-      alert('Please upload a banner image before saving.');
+      showToast('Please upload a banner image before saving.', 'error');
       return;
     }
 
@@ -464,15 +516,17 @@ export default function AdminPage() {
 
       if (editingBanner.id) {
         await updateBanner(editingBanner.id, payload);
+        showToast('Banner updated successfully!', 'success');
       } else {
         await createBanner(payload as any);
+        showToast('New hero banner published!', 'success');
       }
 
       setIsBannerModalOpen(false);
       setEditingBanner(null);
       loadAllData();
     } catch (err: any) {
-      alert(`Error saving banner: ${err.message}`);
+      showToast(`Error saving banner: ${err.message}`, 'error');
     }
   };
 
@@ -484,10 +538,11 @@ export default function AdminPage() {
       onConfirm: async () => {
         try {
           await deleteBanner(id);
+          showToast('Banner deleted successfully', 'info');
           setConfirmModal((prev) => ({ ...prev, isOpen: false }));
           loadAllData();
         } catch (e: any) {
-          alert(`Failed to delete banner: ${e.message}`);
+          showToast(`Failed to delete banner: ${e.message}`, 'error');
         }
       },
     });
@@ -511,8 +566,9 @@ export default function AdminPage() {
         desktop_image_url: cdnUrl,
         mobile_image_url: cdnUrl,
       }));
+      showToast('Banner image uploaded and compressed!', 'success');
     } catch (err: any) {
-      alert(`Banner upload error: ${err.message}`);
+      showToast(`Banner upload error: ${err.message}`, 'error');
     } finally {
       setIsUploadingImage(false);
     }
@@ -532,6 +588,7 @@ export default function AdminPage() {
         discount_value: Number(newCoupon.discount_value),
         min_spend: Number(newCoupon.min_spend || 0),
       });
+      showToast(`Coupon "${newCoupon.code.toUpperCase()}" created!`, 'success');
       setNewCoupon({
         code: '',
         discount_type: 'fixed',
@@ -541,7 +598,7 @@ export default function AdminPage() {
       });
       loadAllData();
     } catch (err: any) {
-      alert(`Error creating coupon: ${err.message}`);
+      showToast(`Error creating coupon: ${err.message}`, 'error');
     }
   };
 
@@ -551,9 +608,14 @@ export default function AdminPage() {
       title: 'Delete Voucher Code',
       message: `Are you sure you want to delete coupon "${code}"?`,
       onConfirm: async () => {
-        await deleteCoupon(id);
-        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
-        loadAllData();
+        try {
+          await deleteCoupon(id);
+          showToast(`Coupon "${code}" deleted`, 'info');
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+          loadAllData();
+        } catch (err: any) {
+          showToast(`Failed to delete coupon: ${err.message}`, 'error');
+        }
       },
     });
   };
@@ -568,9 +630,10 @@ export default function AdminPage() {
     try {
       await updateSiteSettings(settings);
       setSettingsSaved(true);
+      showToast('All store settings saved & updated in real time!', 'success');
       setTimeout(() => setSettingsSaved(false), 3000);
     } catch (err: any) {
-      alert(`Error saving settings: ${err.message}`);
+      showToast(`Error saving settings: ${err.message}`, 'error');
     }
   };
 
@@ -1042,9 +1105,21 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td className="p-4">
-                            <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] font-semibold">
-                              {categories.find((c) => c.id === p.category_id)?.name || 'General'}
-                            </span>
+                            {(() => {
+                              const matched = allCategoriesFlat.find((c) => c.id === p.category_id);
+                              if (!matched) {
+                                return (
+                                  <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-medium">
+                                    General
+                                  </span>
+                                );
+                              }
+                              return (
+                                <span className="bg-amber-50 text-amber-900 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  {matched.parentName ? `${matched.parentName} › ${matched.name}` : matched.name}
+                                </span>
+                              );
+                            })()}
                           </td>
                           <td className="p-4">
                             <span className="font-extrabold text-slate-900">
@@ -1730,7 +1805,8 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td className="p-4 text-slate-600">
-                            {inq.city} {inq.address ? `• ${inq.address}` : ''}
+                            <span className="font-bold text-slate-900 block">{inq.city || 'Islamabad'}</span>
+                            {inq.address && <span className="text-[11px] text-slate-500 block">{inq.address}</span>}
                           </td>
                           <td className="p-4 max-w-xs text-slate-500 italic">
                             {inq.message || 'No additional note'}
@@ -1739,8 +1815,13 @@ export default function AdminPage() {
                             <select
                               value={inq.status}
                               onChange={async (e) => {
-                                await updateServiceInquiryStatus(inq.id, e.target.value as any);
-                                loadAllData();
+                                try {
+                                  await updateServiceInquiryStatus(inq.id, e.target.value as any);
+                                  showToast('Inquiry status updated', 'success');
+                                  loadAllData();
+                                } catch (err: any) {
+                                  showToast(`Error updating inquiry: ${err.message}`, 'error');
+                                }
                               }}
                               className="px-2 py-1 bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-slate-800"
                             >
@@ -2067,13 +2148,20 @@ export default function AdminPage() {
                         category_id: e.target.value || null,
                       }))
                     }
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-hidden"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-hidden focus:border-brand-500 cursor-pointer"
                   >
-                    <option value="">Uncategorized</option>
-                    {categories.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name}
-                      </option>
+                    <option value="">-- Uncategorized / General --</option>
+                    {categories.map((parent) => (
+                      <optgroup key={parent.id} label={`📁 ${parent.name}`}>
+                        <option value={parent.id} className="font-bold">
+                          📁 {parent.name} (Main Department)
+                        </option>
+                        {parent.subcategories?.map((sub) => (
+                          <option key={sub.id} value={sub.id}>
+                            &nbsp;&nbsp;&nbsp;&nbsp;↳ {sub.name} (Sub-model)
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </div>
@@ -2718,6 +2806,44 @@ export default function AdminPage() {
         onConfirm={confirmModal.onConfirm}
         onCancel={() => setConfirmModal((prev) => ({ ...prev, isOpen: false }))}
       />
+
+      {/* --------------------------------------------------------- */}
+      {/* BEAUTIFUL FLOATING TOAST NOTIFICATION (NO BROWSER ALERT) */}
+      {/* --------------------------------------------------------- */}
+      {toast.show && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl backdrop-blur-md border animate-in fade-in slide-in-from-top-4 duration-300 max-w-lg w-[90vw] transition-all bg-slate-900 text-white border-slate-700">
+          {toast.type === 'success' && (
+            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+          )}
+          {toast.type === 'error' && (
+            <div className="w-8 h-8 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+          )}
+          {toast.type === 'info' && (
+            <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+              <Clock className="w-5 h-5" />
+            </div>
+          )}
+          <div className="flex-1 text-xs">
+            <p className="font-bold leading-tight">
+              {toast.type === 'success' ? 'Success' : toast.type === 'error' ? 'Notice' : 'Information'}
+            </p>
+            <p className="text-slate-300 text-[11px] mt-0.5 line-clamp-2">
+              {toast.message}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setToast((prev) => ({ ...prev, show: false }))}
+            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
+          >
+            <XCircle className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
