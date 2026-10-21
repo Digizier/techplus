@@ -7,6 +7,7 @@ export interface Category {
   description?: string | null;
   display_order: number;
   is_active: boolean;
+  show_on_home?: boolean;
   created_at?: string;
   subcategories?: Category[];
 }
@@ -26,20 +27,22 @@ export interface Product {
   description?: string | null;
   is_featured: boolean;
   is_active: boolean;
+  show_on_home?: boolean;
   created_at?: string;
   category?: Category | null;
 }
 
 export interface Banner {
   id: string;
-  title: string;
+  title?: string | null;
   subtitle?: string | null;
   desktop_image_url: string;
   mobile_image_url?: string | null;
   link_url: string;
-  button_text: string;
+  button_text?: string | null;
   display_order: number;
   is_active: boolean;
+  show_on_home?: boolean;
   created_at?: string;
 }
 
@@ -82,6 +85,7 @@ export interface Coupon {
   discount_value: number;
   min_spend: number;
   is_active: boolean;
+  show_on_home?: boolean;
   created_at?: string;
 }
 

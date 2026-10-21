@@ -332,6 +332,7 @@ export default function AdminPage() {
         parent_id: editingCategory.parent_id || null,
         display_order: Number(editingCategory.display_order || 1),
         is_active: editingCategory.is_active !== undefined ? editingCategory.is_active : true,
+        show_on_home: editingCategory.show_on_home !== undefined ? editingCategory.show_on_home : true,
       };
 
       if (editingCategory.id) {
@@ -345,6 +346,16 @@ export default function AdminPage() {
       loadAllData();
     } catch (err: any) {
       alert(`Error saving category: ${err.message}`);
+    }
+  };
+
+  const handleToggleShowOnHome = async (cat: Category) => {
+    try {
+      const nextVal = cat.show_on_home === false ? true : false;
+      await updateCategory(cat.id, { show_on_home: nextVal });
+      loadAllData();
+    } catch (err: any) {
+      alert(`Failed to update top categories display: ${err.message}`);
     }
   };
 
@@ -404,14 +415,19 @@ export default function AdminPage() {
   // -------------------------------------------------------------
   const handleSaveBanner = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingBanner?.title || !editingBanner?.desktop_image_url) {
-      alert('Please fill out Banner Title and Desktop Image.');
+    if (!editingBanner?.desktop_image_url) {
+      alert('Please upload a banner image before saving.');
       return;
     }
 
     try {
       const payload = {
-        ...editingBanner,
+        title: editingBanner.title || 'Promotional Banner',
+        subtitle: editingBanner.subtitle || null,
+        button_text: editingBanner.button_text || null,
+        desktop_image_url: editingBanner.desktop_image_url,
+        mobile_image_url: editingBanner.desktop_image_url,
+        link_url: editingBanner.link_url || '/shop',
         display_order: Number(editingBanner.display_order || 1),
         is_active: editingBanner.is_active !== undefined ? editingBanner.is_active : true,
       };
@@ -419,7 +435,7 @@ export default function AdminPage() {
       if (editingBanner.id) {
         await updateBanner(editingBanner.id, payload);
       } else {
-        await createBanner(payload);
+        await createBanner(payload as any);
       }
 
       setIsBannerModalOpen(false);
@@ -430,21 +446,25 @@ export default function AdminPage() {
     }
   };
 
-  const handleDeleteBanner = (id: string, title: string) => {
+  const handleDeleteBanner = (id: string, title?: string | null) => {
     setConfirmModal({
       isOpen: true,
       title: 'Delete Hero Banner',
-      message: `Are you sure you want to delete banner "${title}"?`,
+      message: `Are you sure you want to delete this promotional banner? This will remove it from the website immediately.`,
       onConfirm: async () => {
-        await deleteBanner(id);
-        setConfirmModal((prev) => ({ ...prev, isOpen: false }));
-        loadAllData();
+        try {
+          await deleteBanner(id);
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+          loadAllData();
+        } catch (e: any) {
+          alert(`Failed to delete banner: ${e.message}`);
+        }
       },
     });
   };
 
-  // Banner Image Upload Handler (Automated WebP Compression)
-  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>, isMobile: boolean) => {
+  // Banner Image Upload Handler (Automated WebP Compression with 1920x640 ratio)
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -453,12 +473,13 @@ export default function AdminPage() {
       const cdnUrl = await compressAndUploadImage(
         file,
         'banners',
-        isMobile ? 800 : 1920,
-        isMobile ? 600 : 1080
+        1920,
+        640
       );
       setEditingBanner((prev) => ({
         ...prev,
-        [isMobile ? 'mobile_image_url' : 'desktop_image_url']: cdnUrl,
+        desktop_image_url: cdnUrl,
+        mobile_image_url: cdnUrl,
       }));
     } catch (err: any) {
       alert(`Banner upload error: ${err.message}`);
@@ -1089,9 +1110,25 @@ export default function AdminPage() {
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <span className="text-[10px] font-bold text-brand-600 uppercase tracking-wider">
-                          Parent Category
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold text-brand-600 uppercase tracking-wider">
+                            Parent Category
+                          </span>
+                          {!cat.parent_id && (
+                            <button
+                              type="button"
+                              onClick={() => handleToggleShowOnHome(cat)}
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition-colors ${
+                                cat.show_on_home !== false
+                                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                                  : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                              }`}
+                              title="Click to toggle Top Categories display on homepage"
+                            >
+                              {cat.show_on_home !== false ? '✓ Home Top Category' : 'Hidden on Home'}
+                            </button>
+                          )}
+                        </div>
                         <h4 className="text-base font-extrabold text-slate-900 mt-0.5">
                           {cat.name}
                         </h4>
@@ -1385,13 +1422,13 @@ export default function AdminPage() {
           {/* TAB 5: HERO & BANNER MANAGER */}
           {activeTab === 'banners' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900">
-                    Hero Carousel & Promotional Banners
+                  <h3 className="font-bold text-base text-slate-900">
+                    Hero Carousel Banners Hub
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Images are automatically compressed to WebP and uploaded to cloud storage.
+                    Pure image banners for desktop and mobile. Recommended size: 1920 × 640 px (3:1 aspect ratio). Automatically compressed into WebP (&lt;100 KB).
                   </p>
                 </div>
 
@@ -1399,75 +1436,81 @@ export default function AdminPage() {
                   type="button"
                   onClick={() => {
                     setEditingBanner({
-                      title: '',
-                      subtitle: '',
+                      desktop_image_url: '',
+                      mobile_image_url: '',
                       link_url: '/shop',
-                      button_text: 'Shop Now',
                       display_order: banners.length + 1,
                       is_active: true,
                     });
                     setIsBannerModalOpen(true);
                   }}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-colors self-start sm:self-auto"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>Add New Banner</span>
+                  <span>Upload New Banner</span>
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {banners.map((bnr) => (
-                  <div
-                    key={bnr.id}
-                    className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xs flex flex-col justify-between"
-                  >
-                    <div className="relative aspect-video bg-slate-900 overflow-hidden">
-                      <img
-                        src={bnr.desktop_image_url}
-                        alt=""
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute top-3 left-3 bg-slate-950/70 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-xs">
-                        Order #{bnr.display_order} • {bnr.is_active ? 'Active' : 'Disabled'}
+              {banners.length === 0 ? (
+                <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
+                  <p className="text-sm text-slate-500 font-medium">No banners uploaded yet.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {banners.map((bnr) => (
+                    <div
+                      key={bnr.id}
+                      className="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-xs flex flex-col justify-between"
+                    >
+                      <div className="relative aspect-[1920/640] bg-slate-950 overflow-hidden">
+                        <img
+                          src={bnr.desktop_image_url}
+                          alt="Banner Preview"
+                          className="w-full h-full object-contain md:object-cover"
+                        />
+                        <div className="absolute top-3 left-3 bg-slate-950/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-xs flex items-center gap-1.5">
+                          <span>Order #{bnr.display_order}</span>
+                          <span>•</span>
+                          <span className={bnr.is_active ? 'text-emerald-400' : 'text-amber-400'}>
+                            {bnr.is_active ? 'Active' : 'Disabled'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 space-y-3">
+                        <div className="flex items-center justify-between text-xs text-slate-600">
+                          <span className="font-mono truncate max-w-[220px]">
+                            Link: <span className="text-slate-900 font-semibold">{bnr.link_url || '/shop'}</span>
+                          </span>
+                          <span className="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">
+                            3:1 Ratio
+                          </span>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingBanner(bnr);
+                              setIsBannerModalOpen(true);
+                            }}
+                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteBanner(bnr.id, bnr.title)}
+                            className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold rounded-lg transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="p-5 space-y-3">
-                      <div>
-                        <h4 className="font-extrabold text-sm text-slate-900">{bnr.title}</h4>
-                        {bnr.subtitle && (
-                          <p className="text-xs text-slate-500 line-clamp-2 mt-0.5">{bnr.subtitle}</p>
-                        )}
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
-                        <span>Link: {bnr.link_url}</span>
-                        <span className="font-bold text-slate-900">[{bnr.button_text}]</span>
-                      </div>
-
-                      <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingBanner(bnr);
-                            setIsBannerModalOpen(true);
-                          }}
-                          className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-colors"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteBanner(bnr.id, bnr.title)}
-                          className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-bold rounded-lg transition-colors"
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -2182,6 +2225,26 @@ export default function AdminPage() {
                 />
               </div>
 
+              {!editingCategory?.parent_id && (
+                <div className="flex items-center gap-2.5 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                  <input
+                    type="checkbox"
+                    id="cat_show_on_home"
+                    checked={editingCategory?.show_on_home !== false}
+                    onChange={(e) =>
+                      setEditingCategory((prev) => ({
+                        ...prev,
+                        show_on_home: e.target.checked,
+                      }))
+                    }
+                    className="rounded text-brand-500 focus:ring-brand-400 w-4 h-4 cursor-pointer"
+                  />
+                  <label htmlFor="cat_show_on_home" className="text-xs font-bold text-slate-800 cursor-pointer">
+                    Show in Top Categories on Homepage
+                  </label>
+                </div>
+              )}
+
               <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
                   type="button"
@@ -2213,90 +2276,58 @@ export default function AdminPage() {
           />
           <div className="relative bg-white rounded-3xl max-w-lg w-full p-6 border border-slate-200 shadow-2xl z-10 space-y-4">
             <h3 className="text-base font-black text-slate-900 border-b border-slate-100 pb-2">
-              {editingBanner?.id ? 'Edit Promotional Banner' : 'New Promotional Banner'}
+              {editingBanner?.id ? 'Edit Promotional Banner' : 'Upload Promotional Banner'}
             </h3>
 
-            <form onSubmit={handleSaveBanner} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Headline Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Heavy Duty Rotary Hammer Drills"
-                  value={editingBanner?.title || ''}
-                  onChange={(e) =>
-                    setEditingBanner((prev) => ({ ...prev, title: e.target.value }))
-                  }
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium"
-                />
-              </div>
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-3.5 text-xs text-amber-900 space-y-1">
+              <p className="font-bold flex items-center gap-1.5">
+                <span>📐 Specific Size Guidelines:</span>
+                <span className="font-mono text-amber-950 font-black">1920 × 640 px (3:1 Ratio)</span>
+              </p>
+              <p className="text-[11px] text-amber-800 leading-relaxed">
+                Upload ONE high-resolution banner image. The image displays seamlessly across all mobile and desktop screens without text clutter or edge cropping. Automatically compressed into WebP (&lt;100 KB) for edge performance.
+              </p>
+            </div>
 
+            <form onSubmit={handleSaveBanner} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Subtitle Text
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  Banner Image *
                 </label>
-                <input
-                  type="text"
-                  placeholder="Pure copper winding drills with 24h dispatch..."
-                  value={editingBanner?.subtitle || ''}
-                  onChange={(e) =>
-                    setEditingBanner((prev) => ({ ...prev, subtitle: e.target.value }))
-                  }
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs"
-                />
-              </div>
-
-              {/* Banner Image Upload Handlers */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Desktop Image (1920x800)
-                  </label>
+                <div className="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:bg-slate-50 transition-colors">
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => handleBannerUpload(e, false)}
-                    className="text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-slate-900 file:text-white"
+                    onChange={handleBannerUpload}
+                    disabled={isUploadingImage}
+                    className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-900 file:text-white hover:file:bg-brand-500 hover:file:text-slate-950 cursor-pointer"
                   />
-                  {editingBanner?.desktop_image_url && (
+                  {isUploadingImage && (
+                    <p className="text-xs text-brand-600 font-bold mt-2 animate-pulse">
+                      Compressing to WebP and uploading to Cloud Storage...
+                    </p>
+                  )}
+                </div>
+
+                {editingBanner?.desktop_image_url && (
+                  <div className="mt-3 relative aspect-[1920/640] rounded-xl overflow-hidden border border-slate-200 bg-slate-950">
                     <img
                       src={editingBanner.desktop_image_url}
-                      alt=""
-                      className="mt-2 h-16 w-full object-cover rounded-lg border border-slate-200"
+                      alt="Banner Preview"
+                      className="w-full h-full object-contain md:object-cover"
                     />
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                    Mobile Image (Optional)
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleBannerUpload(e, true)}
-                    className="text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:font-bold file:bg-slate-900 file:text-white"
-                  />
-                  {editingBanner?.mobile_image_url && (
-                    <img
-                      src={editingBanner.mobile_image_url}
-                      alt=""
-                      className="mt-2 h-16 w-full object-cover rounded-lg border border-slate-200"
-                    />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Target Link
+                    Target Link URL
                   </label>
                   <input
                     type="text"
-                    placeholder="/shop/power-tools"
+                    placeholder="/shop"
                     value={editingBanner?.link_url || ''}
                     onChange={(e) =>
                       setEditingBanner((prev) => ({ ...prev, link_url: e.target.value }))
@@ -2307,18 +2338,33 @@ export default function AdminPage() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Button Text
+                    Display Order
                   </label>
                   <input
-                    type="text"
-                    placeholder="Shop Now"
-                    value={editingBanner?.button_text || ''}
+                    type="number"
+                    min="1"
+                    value={editingBanner?.display_order || 1}
                     onChange={(e) =>
-                      setEditingBanner((prev) => ({ ...prev, button_text: e.target.value }))
+                      setEditingBanner((prev) => ({ ...prev, display_order: Number(e.target.value) }))
                     }
                     className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold"
                   />
                 </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="banner_active"
+                  checked={editingBanner?.is_active !== false}
+                  onChange={(e) =>
+                    setEditingBanner((prev) => ({ ...prev, is_active: e.target.checked }))
+                  }
+                  className="rounded text-brand-500 focus:ring-brand-400 w-4 h-4 cursor-pointer"
+                />
+                <label htmlFor="banner_active" className="text-xs font-bold text-slate-700 cursor-pointer">
+                  Banner Active (Visible on Storefront Homepage)
+                </label>
               </div>
 
               <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
@@ -2331,8 +2377,8 @@ export default function AdminPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isUploadingImage}
-                  className="px-5 py-2 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
+                  disabled={isUploadingImage || !editingBanner?.desktop_image_url}
+                  className="px-5 py-2 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-slate-950 font-bold text-xs rounded-xl shadow-xs"
                 >
                   Save Banner
                 </button>

@@ -218,7 +218,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
 export async function getCategories(includeInactive: boolean = false): Promise<Category[]> {
   let query = supabase
     .from('categories')
-    .select('id, name, slug, parent_id, image_url, description, display_order, is_active')
+    .select('id, name, slug, parent_id, image_url, description, display_order, is_active, show_on_home')
     .order('display_order', { ascending: true });
 
   if (!includeInactive) {

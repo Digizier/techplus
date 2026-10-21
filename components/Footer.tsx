@@ -9,68 +9,68 @@ export default function Footer() {
   const { settings } = useSettings();
 
   return (
-    <footer className="bg-slate-950 text-slate-300 pt-16 pb-24 md:pb-12 border-t border-slate-800">
+    <footer className="bg-slate-950 text-slate-300 pt-8 md:pt-14 pb-20 md:pb-12 border-t border-slate-800">
       {/* 1. Value Proposition Features Bar */}
-      <div className="max-w-7xl mx-auto px-4 mb-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6 md:p-8 bg-slate-900/80 rounded-3xl border border-slate-800/80">
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-brand-500/10 text-brand-400 rounded-2xl shrink-0">
-              <Truck className="w-5 h-5" />
+      <div className="max-w-7xl mx-auto px-4 mb-8 md:mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 p-4 md:p-6 bg-slate-900/80 rounded-2xl md:rounded-3xl border border-slate-800/80">
+          <div className="flex items-start gap-2.5 md:gap-3.5">
+            <div className="p-2 md:p-2.5 bg-brand-500/10 text-brand-400 rounded-xl md:rounded-2xl shrink-0">
+              <Truck className="w-4 h-4 md:w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white mb-0.5">24h Fast Dispatch</h4>
-              <p className="text-xs text-slate-400">Shipped within 24 hours, delivered in 2-5 days</p>
+              <h4 className="text-xs md:text-sm font-bold text-white mb-0.5">24h Fast Dispatch</h4>
+              <p className="text-[11px] md:text-xs text-slate-400 leading-tight">Delivered in 2-5 days</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-2xl shrink-0">
-              <ShieldCheck className="w-5 h-5" />
+          <div className="flex items-start gap-2.5 md:gap-3.5">
+            <div className="p-2 md:p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl md:rounded-2xl shrink-0">
+              <ShieldCheck className="w-4 h-4 md:w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white mb-0.5">100% Genuine Tools</h4>
-              <p className="text-xs text-slate-400">Pure copper winding & authentic hardware</p>
+              <h4 className="text-xs md:text-sm font-bold text-white mb-0.5">100% Genuine Tools</h4>
+              <p className="text-[11px] md:text-xs text-slate-400 leading-tight">Pure copper winding</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-blue-500/10 text-blue-400 rounded-2xl shrink-0">
-              <Wrench className="w-5 h-5" />
+          <div className="flex items-start gap-2.5 md:gap-3.5">
+            <div className="p-2 md:p-2.5 bg-blue-500/10 text-blue-400 rounded-xl md:rounded-2xl shrink-0">
+              <Wrench className="w-4 h-4 md:w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white mb-0.5">Repair & Maintenance</h4>
-              <p className="text-xs text-slate-400">Expert AC, appliance & solar services</p>
+              <h4 className="text-xs md:text-sm font-bold text-white mb-0.5">Repair & Services</h4>
+              <p className="text-[11px] md:text-xs text-slate-400 leading-tight">Expert appliance care</p>
             </div>
           </div>
 
-          <div className="flex items-start gap-3.5">
-            <div className="p-2.5 bg-purple-500/10 text-purple-400 rounded-2xl shrink-0">
-              <RefreshCw className="w-5 h-5" />
+          <div className="flex items-start gap-2.5 md:gap-3.5">
+            <div className="p-2 md:p-2.5 bg-purple-500/10 text-purple-400 rounded-xl md:rounded-2xl shrink-0">
+              <RefreshCw className="w-4 h-4 md:w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white mb-0.5">Return & Exchange</h4>
-              <p className="text-xs text-slate-400">Customer friendly replacement support</p>
+              <h4 className="text-xs md:text-sm font-bold text-white mb-0.5">Return & Exchange</h4>
+              <p className="text-[11px] md:text-xs text-slate-400 leading-tight">Friendly replacement</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* 2. Main Footer Grid */}
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-8 lg:gap-10 mb-8 md:mb-12">
         {/* Column 1: Brand Info */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-3 md:space-y-4">
           <Link href="/" className="inline-block">
             <img
               src="/images/logo.png"
               alt="Techplus.pk"
-              className="h-12 w-auto object-contain brightness-110"
+              className="h-10 md:h-12 w-auto object-contain brightness-110"
             />
           </Link>
           <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
             Techplus.pk is Pakistan&apos;s trusted destination for heavy-duty power tools, cordless machines, chainsaw adapters, and professional AC & home appliance repair services.
           </p>
 
-          <div className="space-y-2 pt-2 text-xs">
+          <div className="space-y-1.5 md:space-y-2 pt-1 md:pt-2 text-xs">
             <div className="flex items-start gap-2.5 text-slate-400">
               <MapPin className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />
               <span>{settings.address}</span>
@@ -94,10 +94,10 @@ export default function Footer() {
 
         {/* Column 2: Products */}
         <div>
-          <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+          <h4 className="text-xs md:text-sm font-bold text-white uppercase tracking-wider mb-2.5 md:mb-4 border-b border-slate-800 pb-1.5 md:pb-2">
             Tool Categories
           </h4>
-          <ul className="space-y-2.5 text-xs text-slate-400">
+          <ul className="space-y-2 md:space-y-2.5 text-xs text-slate-400">
             <li>
               <Link href="/shop/power-tools" className="hover:text-brand-400 transition-colors">
                 Power Tools & Drills
@@ -133,10 +133,10 @@ export default function Footer() {
 
         {/* Column 3: Customer Care & Services */}
         <div>
-          <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+          <h4 className="text-xs md:text-sm font-bold text-white uppercase tracking-wider mb-2.5 md:mb-4 border-b border-slate-800 pb-1.5 md:pb-2">
             Services & Support
           </h4>
-          <ul className="space-y-2.5 text-xs text-slate-400">
+          <ul className="space-y-2 md:space-y-2.5 text-xs text-slate-400">
             <li>
               <Link href="/services" className="hover:text-brand-400 transition-colors">
                 AC Repair & Cleaning
@@ -167,10 +167,10 @@ export default function Footer() {
 
         {/* Column 4: Policies */}
         <div>
-          <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">
+          <h4 className="text-xs md:text-sm font-bold text-white uppercase tracking-wider mb-2.5 md:mb-4 border-b border-slate-800 pb-1.5 md:pb-2">
             Policies & Legal
           </h4>
-          <ul className="space-y-2.5 text-xs text-slate-400">
+          <ul className="space-y-2 md:space-y-2.5 text-xs text-slate-400">
             <li>
               <Link href="/return-and-exchange-policy" className="hover:text-brand-400 transition-colors">
                 Return & Exchange Policy
@@ -201,13 +201,13 @@ export default function Footer() {
       </div>
 
       {/* 3. Bottom Bar: Payments & Copyright */}
-      <div className="max-w-7xl mx-auto px-4 pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-        <div>
+      <div className="max-w-7xl mx-auto px-4 pt-6 md:pt-8 border-t border-slate-800/80 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="text-center md:text-left">
           © {new Date().getFullYear()} {settings.store_name}. All Rights Reserved. NTN: {settings.ntn_number}.
         </div>
 
         {/* Payment Badges */}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 md:gap-2">
           <span className="text-[11px] text-slate-400 font-medium">We Accept:</span>
           <span className="bg-slate-900 border border-slate-800 px-2 py-1 rounded text-[10px] text-slate-300 font-bold">
             Cash on Delivery

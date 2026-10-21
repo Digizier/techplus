@@ -18,8 +18,9 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/lib/cart-context';
 import { useSettings } from '@/lib/settings-context';
-import { getCategories } from '@/lib/db';
 import { Category } from '@/lib/types';
+import { getCategories } from '@/lib/db';
+import SmartSearch from './SmartSearch';
 
 export default function Header() {
   const router = useRouter();
@@ -111,26 +112,10 @@ export default function Header() {
           />
         </Link>
 
-        {/* Global Search Bar (Desktop) */}
-        <form
-          onSubmit={handleSearchSubmit}
-          className="hidden md:flex flex-1 max-w-xl relative items-center"
-        >
-          <input
-            type="text"
-            placeholder="Search drills, chainsaw converters, pliers, AC services..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100/80 focus:bg-white border border-slate-200 focus:border-brand-500 pl-11 pr-24 py-2.5 rounded-full text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden transition-all shadow-inner"
-          />
-          <Search className="w-4 h-4 text-slate-400 absolute left-4 pointer-events-none" />
-          <button
-            type="submit"
-            className="absolute right-1.5 px-4 py-1.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-full transition-colors shadow-xs"
-          >
-            Search
-          </button>
-        </form>
+        {/* Global Smart Search Bar (Desktop with live Hinglish & product suggestions) */}
+        <div className="hidden md:flex flex-1 max-w-xl">
+          <SmartSearch />
+        </div>
 
         {/* Actions: WhatsApp Contact & Cart */}
         <div className="flex items-center gap-2 md:gap-4 shrink-0">
@@ -165,24 +150,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* 3. Mobile Search Bar (Below Header on phones) */}
+      {/* 3. Mobile Search Bar (Below Header on phones with live dropdown) */}
       <div className="md:hidden px-4 pb-3">
-        <form onSubmit={handleSearchSubmit} className="relative flex items-center">
-          <input
-            type="text"
-            placeholder="Search tools, converters, pliers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-100 border border-slate-200 pl-10 pr-16 py-2 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden"
-          />
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5" />
-          <button
-            type="submit"
-            className="absolute right-1 px-3 py-1 bg-brand-500 text-slate-950 font-bold text-[11px] rounded-lg"
-          >
-            Go
-          </button>
-        </form>
+        <SmartSearch isMobile />
       </div>
 
       {/* 4. Desktop Categories & Department Bar */}
