@@ -14,6 +14,22 @@
   }
 }
 
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari, Edge, Opera, Firefox */
+  .scrollbar-none::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .scrollbar-none,
+  .no-scrollbar {
+    -ms-overflow-style: none !important; /* IE and Edge */
+    scrollbar-width: none !important; /* Firefox */
+  }
+}
+
 /* Pristine Printable PDF Invoice Styling */
 @media print {
   body {

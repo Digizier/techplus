@@ -23,25 +23,23 @@ import { getProducts, getCategories } from '@/lib/db';
 import { Product, Category } from '@/lib/types';
 import { useSettings } from '@/lib/settings-context';
 
-// Reusable continuous auto-scroll hook with pause-on-interaction and reduced-motion support
+// Robust continuous auto-scroll hook with pause-on-interaction
 function useContinuousScroll(
   ref: React.RefObject<HTMLDivElement | null>,
-  speed: number = 0.5,
+  speed: number = 0.8,
   isActive: boolean = true
 ) {
   useEffect(() => {
     const el = ref.current;
     if (!el || !isActive) return;
 
-    // Respect reduced-motion preferences
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-
     let isInteracting = false;
     let resumeTimer: ReturnType<typeof setTimeout> | null = null;
     let animId: number;
-    let currentScroll = el.scrollLeft;
+    let accumulator = 0;
+
+    // Force instant programmatic scroll updates without CSS easing conflicts
+    el.style.scrollBehavior = 'auto';
 
     const pause = () => {
       isInteracting = true;
@@ -51,40 +49,35 @@ function useContinuousScroll(
     const resume = (delay = 1800) => {
       if (resumeTimer) clearTimeout(resumeTimer);
       resumeTimer = setTimeout(() => {
-        if (el) {
-          currentScroll = el.scrollLeft;
-        }
         isInteracting = false;
       }, delay);
     };
 
     const handleMouseEnter = () => pause();
-    const handleMouseLeave = () => resume(600);
+    const handleMouseLeave = () => resume(500);
     const handleTouchStart = () => pause();
-    const handleTouchEnd = () => resume(2000);
-    const handleScroll = () => {
-      if (isInteracting && el) {
-        currentScroll = el.scrollLeft;
-      }
-    };
+    const handleTouchEnd = () => resume(1800);
 
     el.addEventListener('mouseenter', handleMouseEnter);
     el.addEventListener('mouseleave', handleMouseLeave);
     el.addEventListener('touchstart', handleTouchStart, { passive: true });
     el.addEventListener('touchend', handleTouchEnd, { passive: true });
-    el.addEventListener('scroll', handleScroll, { passive: true });
 
     const tick = () => {
       if (!isInteracting && el) {
         const halfWidth = el.scrollWidth / 2;
-        if (halfWidth > el.clientWidth) {
-          currentScroll += speed;
-          if (currentScroll >= halfWidth) {
-            currentScroll -= halfWidth;
-          } else if (currentScroll <= 0) {
-            currentScroll += halfWidth;
+        if (halfWidth > 0 && halfWidth > el.clientWidth) {
+          accumulator += speed;
+          if (accumulator >= 1) {
+            const step = Math.floor(accumulator);
+            accumulator -= step;
+            el.scrollLeft += step;
+            if (el.scrollLeft >= halfWidth) {
+              el.scrollLeft -= halfWidth;
+            } else if (el.scrollLeft <= 0) {
+              el.scrollLeft += halfWidth;
+            }
           }
-          el.scrollLeft = currentScroll;
         }
       }
       animId = requestAnimationFrame(tick);
@@ -99,7 +92,6 @@ function useContinuousScroll(
       el.removeEventListener('mouseleave', handleMouseLeave);
       el.removeEventListener('touchstart', handleTouchStart);
       el.removeEventListener('touchend', handleTouchEnd);
-      el.removeEventListener('scroll', handleScroll);
     };
   }, [ref, speed, isActive]);
 }
@@ -187,17 +179,17 @@ export default function HomePage() {
 
   const repeatedBrands = React.useMemo(() => {
     let list = [...brandLogos];
-    while (list.length < 12) {
+    while (list.length < 14) {
       list = [...list, ...brandLogos];
     }
     return [...list, ...list];
   }, []);
 
   // Smooth continuous auto-scrolling with varied speeds
-  // Categories: calm and readable speed (0.45px/frame)
-  // Brands: steady logo ticker (0.75px/frame)
-  useContinuousScroll(categoryScrollRef, 0.45, repeatedCategories.length > 0);
-  useContinuousScroll(brandScrollRef, 0.75, repeatedBrands.length > 0);
+  // Categories: steady speed (0.8px/frame)
+  // Brands: energetic logo ticker (1.1px/frame)
+  useContinuousScroll(categoryScrollRef, 0.8, repeatedCategories.length > 0);
+  useContinuousScroll(brandScrollRef, 1.1, repeatedBrands.length > 0);
 
   const scrollContainer = (ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
     if (ref.current) {
@@ -293,7 +285,8 @@ export default function HomePage() {
         {/* Categories Display: Continuous Smooth Auto-Scrolling Carousel */}
         <div
           ref={categoryScrollRef}
-          className="flex items-stretch gap-2.5 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-none py-1 -mx-4 px-4 md:mx-0 md:px-0 select-none cursor-grab active:cursor-grabbing"
+          className="flex items-stretch gap-2.5 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-none no-scrollbar py-1 -mx-4 px-4 md:mx-0 md:px-0 select-none cursor-grab active:cursor-grabbing"
+          style={{ scrollBehavior: 'auto' }}
         >
           {repeatedCategories.map((cat, idx) => (
             <Link
@@ -518,7 +511,8 @@ export default function HomePage() {
         {/* Continuous Auto-Scrolling Row for Brands */}
         <div
           ref={brandScrollRef}
-          className="flex items-center gap-3 md:gap-4 overflow-x-auto scrollbar-none py-1 -mx-2 px-2 select-none cursor-grab active:cursor-grabbing"
+          className="flex items-center gap-3 md:gap-4 overflow-x-auto scrollbar-none no-scrollbar py-1 -mx-2 px-2 select-none cursor-grab active:cursor-grabbing"
+          style={{ scrollBehavior: 'auto' }}
         >
           {repeatedBrands.map((brand, idx) => (
             <div
