@@ -29,6 +29,7 @@ import {
   AlertTriangle,
   RefreshCw,
   TrendingUp,
+  Download,
 } from 'lucide-react';
 import {
   Product,
@@ -62,6 +63,7 @@ import {
   updateSiteSettings,
   getServiceInquiries,
   updateServiceInquiryStatus,
+  deleteServiceInquiry,
 } from '@/lib/db';
 import { compressAndUploadImage } from '@/lib/image-compressor';
 import ConfirmModal from '@/components/ConfirmModal';
@@ -206,9 +208,13 @@ export default function AdminPage() {
     return list;
   }, [categories]);
 
-  // Load all data
-  const loadAllData = async () => {
-    setLoading(true);
+  // Background Auto-Sync State (30 Seconds Interval)
+  const [autoSyncEnabled, setAutoSyncEnabled] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Load all data (supports silent background sync without loading flash or tab resets)
+  const loadAllData = async (silent: boolean = false) => {
+    if (!silent) setLoading(true);
     try {
       const [prodsRes, cats, ords, bnrs, cpns, setts, inqs] = await Promise.all([
         getProducts({ limit: 100, includeInactive: true }),
@@ -230,8 +236,97 @@ export default function AdminPage() {
     } catch (e) {
       console.error('Failed to load admin data:', e);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
+  };
+
+  // Background Auto-Sync Effect (Every 30 Seconds)
+  useEffect(() => {
+    if (!isAuthenticated || !autoSyncEnabled) return;
+
+    const intervalId = setInterval(async () => {
+      setIsSyncing(true);
+      await loadAllData(true);
+      setTimeout(() => setIsSyncing(false), 800);
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(intervalId);
+  }, [isAuthenticated, autoSyncEnabled]);
+
+  // Download All Products in Comprehensive CSV Format
+  const handleExportProductsCSV = () => {
+    if (products.length === 0) {
+      showToast('No products available to export.', 'info');
+      return;
+    }
+
+    const headers = [
+      'ID',
+      'Title',
+      'SKU',
+      'Slug',
+      'Price (PKR)',
+      'Regular Price (PKR)',
+      'Stock Units',
+      'Main Department',
+      'Sub-model Category',
+      'Status',
+      'Spotlight Featured',
+      'Cover Image URL',
+      'All Image URLs',
+      'Short Description',
+      'Full Description',
+      'Created Date',
+    ];
+
+    const escapeCSV = (val: any) => {
+      if (val === null || val === undefined) return '""';
+      const str = String(val).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const rows = products.map((p) => {
+      const catInfo = allCategoriesFlat.find((c) => c.id === p.category_id);
+      const mainDept = catInfo ? (catInfo.parentName || catInfo.name) : 'Uncategorized';
+      const subDept = catInfo && catInfo.parentName ? catInfo.name : '';
+      const allImgs = (p.images && p.images.length > 0 ? p.images : [p.thumbnail_url])
+        .filter(Boolean)
+        .join(' | ');
+
+      return [
+        escapeCSV(p.id),
+        escapeCSV(p.title),
+        escapeCSV(p.sku || ''),
+        escapeCSV(p.slug),
+        escapeCSV(p.price),
+        escapeCSV(p.regular_price || p.price),
+        escapeCSV(p.stock),
+        escapeCSV(mainDept),
+        escapeCSV(subDept),
+        escapeCSV(p.is_active ? 'Active' : 'Draft'),
+        escapeCSV(p.is_featured ? 'Yes' : 'No'),
+        escapeCSV(p.thumbnail_url || ''),
+        escapeCSV(allImgs),
+        escapeCSV(p.short_description || ''),
+        escapeCSV(p.description || ''),
+        escapeCSV(p.created_at || ''),
+      ].join(',');
+    });
+
+    // Add BOM (\uFEFF) for Excel UTF-8 compatibility
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.setAttribute('href', url);
+    link.setAttribute('download', `techplus_products_catalog_${dateStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast(`Exported ${products.length} products to CSV file!`, 'success');
   };
 
   useEffect(() => {
@@ -621,6 +716,27 @@ export default function AdminPage() {
   };
 
   // -------------------------------------------------------------
+  // CRUD HANDLERS: SERVICE INQUIRIES
+  // -------------------------------------------------------------
+  const handleDeleteServiceInquiry = (id: string, customerName: string) => {
+    setConfirmModal({
+      isOpen: true,
+      title: 'Delete Service Inquiry',
+      message: `Are you sure you want to delete inquiry from "${customerName}"? This record will be permanently deleted from the database.`,
+      onConfirm: async () => {
+        try {
+          await deleteServiceInquiry(id);
+          showToast(`Inquiry from "${customerName}" deleted successfully`, 'info');
+          setConfirmModal((prev) => ({ ...prev, isOpen: false }));
+          loadAllData(true);
+        } catch (err: any) {
+          showToast(`Failed to delete inquiry: ${err.message}`, 'error');
+        }
+      },
+    });
+  };
+
+  // -------------------------------------------------------------
   // SETTINGS HANDLER
   // -------------------------------------------------------------
   const handleSaveSettings = async (e: React.FormEvent) => {
@@ -892,13 +1008,38 @@ export default function AdminPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Auto-Sync Toggle Button (30s Background Silent Sync) */}
             <button
               type="button"
-              onClick={loadAllData}
+              onClick={() => {
+                const nextVal = !autoSyncEnabled;
+                setAutoSyncEnabled(nextVal);
+                showToast(nextVal ? 'Auto-Sync enabled (silent refresh every 30s)' : 'Auto-Sync paused', 'info');
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+                autoSyncEnabled
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-slate-100 text-slate-500 border-slate-200'
+              }`}
+              title="Toggle automatic background data refresh every 30 seconds without reloading the page or switching tabs"
+            >
+              <span className={`w-2 h-2 rounded-full ${autoSyncEnabled ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
+              <span>{autoSyncEnabled ? 'Auto-Sync: ON (30s)' : 'Auto-Sync: OFF'}</span>
+            </button>
+
+            {/* Manual Sync Now Button */}
+            <button
+              type="button"
+              onClick={async () => {
+                setIsSyncing(true);
+                await loadAllData(true);
+                setIsSyncing(false);
+                showToast('Cloud database synchronized successfully!', 'success');
+              }}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors"
             >
-              <RefreshCw className="w-3.5 h-3.5" />
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
               <span>Sync Now</span>
             </button>
           </div>
@@ -1044,29 +1185,41 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingProduct({
-                      title: '',
-                      price: 1999,
-                      regular_price: 2500,
-                      stock: 10,
-                      category_id: categories[0]?.id || '',
-                      is_active: true,
-                      is_featured: false,
-                      thumbnail_url: '',
-                      images: [],
-                      description: '',
-                      short_description: '',
-                    });
-                    setIsProductModalOpen(true);
-                  }}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-colors shrink-0"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add New Product</span>
-                </button>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={handleExportProductsCSV}
+                    className="flex items-center gap-2 px-3.5 py-2.5 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 font-bold text-xs rounded-xl shadow-2xs transition-colors shrink-0"
+                    title="Export complete products data in a clean CSV file"
+                  >
+                    <Download className="w-4 h-4 text-brand-600" />
+                    <span>Download Products CSV</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingProduct({
+                        title: '',
+                        price: 1999,
+                        regular_price: 2500,
+                        stock: 10,
+                        category_id: categories[0]?.id || '',
+                        is_active: true,
+                        is_featured: false,
+                        thumbnail_url: '',
+                        images: [],
+                        description: '',
+                        short_description: '',
+                      });
+                      setIsProductModalOpen(true);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-colors shrink-0"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add New Product</span>
+                  </button>
+                </div>
               </div>
 
               {/* Products Table */}
@@ -1790,6 +1943,7 @@ export default function AdminPage() {
                         <th className="p-4">Location / Address</th>
                         <th className="p-4">Message</th>
                         <th className="p-4">Status</th>
+                        <th className="p-4 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -1818,7 +1972,7 @@ export default function AdminPage() {
                                 try {
                                   await updateServiceInquiryStatus(inq.id, e.target.value as any);
                                   showToast('Inquiry status updated', 'success');
-                                  loadAllData();
+                                  loadAllData(true);
                                 } catch (err: any) {
                                   showToast(`Error updating inquiry: ${err.message}`, 'error');
                                 }
@@ -1830,6 +1984,16 @@ export default function AdminPage() {
                               <option value="Scheduled">Scheduled</option>
                               <option value="Completed">Completed</option>
                             </select>
+                          </td>
+                          <td className="p-4 text-right">
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteServiceInquiry(inq.id, inq.customer_name)}
+                              className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors inline-flex items-center gap-1"
+                              title="Delete Service Inquiry from Database"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </td>
                         </tr>
                       ))}

@@ -672,3 +672,13 @@ export async function updateServiceInquiryStatus(id: string, status: ServiceInqu
   if (error) throw new Error(error.message);
   return true;
 }
+
+export async function deleteServiceInquiry(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from('service_inquiries')
+    .delete()
+    .eq('id', id);
+
+  if (error) throw new Error(error.message);
+  return true;
+}
