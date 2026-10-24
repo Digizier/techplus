@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { getProductBySlug, getProducts } from '@/lib/db';
+import { resolveImageUrl } from '@/lib/image-utils';
 import { useCart } from '@/lib/cart-context';
 import { useSettings } from '@/lib/settings-context';
 import ProductCard from '@/components/ProductCard';
@@ -41,8 +42,9 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
       const data = await getProductBySlug(slug);
       if (data) {
         setProduct(data);
-        const initialImg =
-          data.thumbnail_url || (data.images && data.images[0]) || '';
+        const initialImg = resolveImageUrl(
+          data.thumbnail_url || (data.images && data.images[0]) || ''
+        );
         setSelectedImage(initialImg);
 
         // Fetch related products from same category (reliably 4 items)
@@ -112,10 +114,11 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
     : 0;
 
   const galleryImages = Array.from(
-    new Set([
-      product.thumbnail_url,
-      ...(product.images || []),
-    ].filter(Boolean))
+    new Set(
+      [product.thumbnail_url, ...(product.images || [])]
+        .filter(Boolean)
+        .map((img) => resolveImageUrl(img))
+    )
   );
 
   const handleAddToCart = () => {

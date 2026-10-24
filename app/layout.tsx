@@ -18,21 +18,36 @@ export const metadata: Metadata = {
     apple: '/favicon.png',
   },
   openGraph: {
-    title: 'Techplus.pk - Tools & Home Appliances Solutions',
+    title: 'Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters & Repair Services',
     description:
-      'Authorized sales & service center for heavy duty tools, converters, and appliance maintenance across Pakistan.',
+      'Shop authentic copper winding power tools, electric drill to chainsaw converters, cordless kits, and expert AC / home appliance repair services in Islamabad & across Pakistan.',
     url: 'https://techplus.pk',
     siteName: 'Techplus.pk',
     images: [
       {
-        url: '/images/hero-banner.png',
+        url: 'https://techplus.pk/images/techplus-og-share.png',
         width: 1200,
         height: 630,
-        alt: 'Techplus.pk Power Tools & Converters',
+        alt: 'Techplus.pk Logo & Industrial Power Tools',
+        type: 'image/png',
+      },
+      {
+        url: 'https://techplus.pk/images/techplus-square-og.png',
+        width: 800,
+        height: 800,
+        alt: 'Techplus.pk Logo',
+        type: 'image/png',
       },
     ],
     locale: 'en_PK',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters & Repair Services',
+    description:
+      'Shop authentic copper winding power tools, electric drill to chainsaw converters, cordless kits, and expert AC / home appliance repair services in Islamabad & across Pakistan.',
+    images: ['https://techplus.pk/images/techplus-og-share.png'],
   },
 };
 

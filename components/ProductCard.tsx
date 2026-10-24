@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingCart, Zap, CheckCircle2 } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useCart } from '@/lib/cart-context';
+import { resolveImageUrl } from '@/lib/image-utils';
 
 interface ProductCardProps {
   product: Product;
@@ -25,10 +26,10 @@ export default function ProductCard({ product }: ProductCardProps) {
     : 0;
 
   // Fallback image handler
-  const imageUrl =
+  const rawImage =
     product.thumbnail_url ||
-    (product.images && product.images.length > 0 ? product.images[0] : '') ||
-    '/images/products/Polish_20201014_203208731-removebg-preview.png';
+    (product.images && product.images.length > 0 ? product.images[0] : '');
+  const imageUrl = resolveImageUrl(rawImage);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
