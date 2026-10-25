@@ -590,10 +590,110 @@ export default function HomePage() {
               <img
                 src={`/images/brands/${brand.file}`}
                 alt={brand.name}
+                width={128}
+                height={48}
                 className="max-h-6 sm:max-h-7 max-w-full object-contain grayscale hover:grayscale-0 transition-all opacity-70 hover:opacity-100"
               />
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* 7. Comprehensive Humanized Buyer's Guide & SEO Knowledge Hub */}
+      <section className="bg-slate-50 border border-slate-200/80 rounded-2xl md:rounded-3xl p-5 sm:p-7 md:p-10 space-y-8">
+        <div className="max-w-3xl space-y-2">
+          <span className="text-[10px] sm:text-xs font-bold text-brand-700 bg-brand-100 border border-brand-200 px-3 py-1 rounded-full uppercase tracking-wider inline-block">
+            Buyer&apos;s Knowledge &amp; Trust Guide
+          </span>
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+            Why Craftsmen, Contractors &amp; Homeowners in Pakistan Trust Techplus.pk
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Finding reliable machinery online shouldn&apos;t feel like a gamble. We test our power tools against real workloads so you get authentic copper winding, honest torque, and durable spare parts delivered anywhere in Pakistan.
+          </p>
+        </div>
+
+        {/* 3 Value Pillars */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-2xs space-y-2.5">
+            <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-bold text-sm">
+              01
+            </div>
+            <h3 className="text-sm sm:text-base font-extrabold text-slate-900">
+              100% Pure Copper Motor Winding
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Cheap tools flood Pakistani markets using copper-coated aluminium (CCA) wires that burn out quickly during summer heat and low-voltage drops. Techplus insists on thick, pure copper armatures that run cooler, handle high resistance, and deliver lasting torque.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-2xs space-y-2.5">
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center font-bold text-sm">
+              02
+            </div>
+            <h3 className="text-sm sm:text-base font-extrabold text-slate-900">
+              Chainsaw &amp; Saw Converter Kits
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Skip the high maintenance of heavy petrol chainsaws. Our precision adapter kits lock right into your existing 10mm or 13mm drill chuck. Featuring hardened alloy guide bars, anti-slip auxiliary handles, and sharp chains, you can prune trees and cut wood safely in minutes.
+            </p>
+          </div>
+
+          <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200/70 shadow-2xs space-y-2.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center font-bold text-sm">
+              03
+            </div>
+            <h3 className="text-sm sm:text-base font-extrabold text-slate-900">
+              Parcel Checking On Delivery (COD)
+            </h3>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Trust matters above everything else. That&apos;s why we offer transparent Cash on Delivery across Karachi, Lahore, Rawalpindi, Islamabad, Peshawar, Quetta, and all tehsils. You have full checking rights to inspect parcel contents before handing payment to the rider.
+            </p>
+          </div>
+        </div>
+
+        {/* Practical FAQ Grid */}
+        <div className="pt-4 border-t border-slate-200 space-y-4">
+          <h3 className="text-base sm:text-lg font-black text-slate-900">
+            Frequently Asked Questions by Tool Buyers in Pakistan
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm">
+            <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200/70 space-y-1.5">
+              <h4 className="font-bold text-slate-900">
+                Will the chainsaw adapter fit my current drill machine?
+              </h4>
+              <p className="text-slate-600 leading-relaxed text-xs">
+                Yes. The converter features a universal triangular shank that clamps into any standard 10mm (3/8&quot;) or 13mm (1/2&quot;) drill chuck, whether corded electric or cordless battery-powered.
+              </p>
+            </div>
+
+            <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200/70 space-y-1.5">
+              <h4 className="font-bold text-slate-900">
+                Do you stock replacement blades, chains, and spare parts?
+              </h4>
+              <p className="text-slate-600 leading-relaxed text-xs">
+                Yes. Unlike random dropshippers, Techplus maintains direct inventory of spare 4-inch and 6-inch chains, guide bars, reciprocating blades, and carbon brushes in our Islamabad store.
+              </p>
+            </div>
+
+            <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200/70 space-y-1.5">
+              <h4 className="font-bold text-slate-900">
+                How does doorstep AC service work in Islamabad &amp; Rawalpindi?
+              </h4>
+              <p className="text-slate-600 leading-relaxed text-xs">
+                Our technicians bring dedicated high-pressure jet washing machines, leak detection gauges, and genuine capacitors to your home or office. We wash cooling coils thoroughly and test cooling before leaving.
+              </p>
+            </div>
+
+            <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200/70 space-y-1.5">
+              <h4 className="font-bold text-slate-900">
+                How fast is nationwide delivery across Pakistan?
+              </h4>
+              <p className="text-slate-600 leading-relaxed text-xs">
+                Orders in Islamabad and Rawalpindi arrive within 24 to 48 hours. Shipments to Punjab, Sindh, KPK, and Balochistan arrive within 2 to 4 business days via reliable courier partners.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

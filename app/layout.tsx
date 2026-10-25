@@ -6,9 +6,9 @@ import LayoutShell from '@/components/LayoutShell';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://techplus.pk'),
-  title: 'Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters & Repair Services',
+  title: 'Techplus.pk | Heavy Duty Power Tools & Converters PK',
   description:
-    'Shop authentic copper winding power tools, electric drill to chainsaw converters, cordless kits, and expert AC / home appliance repair services in Islamabad & across Pakistan.',
+    'Buy 100% copper power tools, drill-to-chainsaw converters, cordless kits and expert AC repair in Islamabad and Pakistan. Cash on delivery nationwide.',
   icons: {
     icon: [
       { url: '/favicon.png', type: 'image/png' },
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
     canonical: 'https://techplus.pk',
   },
   openGraph: {
-    title: 'Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters & Repair Services',
+    title: 'Techplus.pk | Heavy Duty Power Tools & Converters PK',
     description:
-      'Shop authentic copper winding power tools, electric drill to chainsaw converters, cordless kits, and expert AC / home appliance repair services in Islamabad & across Pakistan.',
+      'Buy 100% copper power tools, drill-to-chainsaw converters, cordless kits and expert AC repair in Islamabad and Pakistan. Cash on delivery nationwide.',
     url: 'https://techplus.pk',
     siteName: 'Techplus.pk',
     images: [
@@ -47,9 +47,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters & Repair Services',
+    title: 'Techplus.pk | Heavy Duty Power Tools & Converters PK',
     description:
-      'Shop authentic copper winding power tools, electric drill to chainsaw converters, cordless kits, and expert AC / home appliance repair services in Islamabad & across Pakistan.',
+      'Buy 100% copper power tools, drill-to-chainsaw converters, cordless kits and expert AC repair in Islamabad and Pakistan. Cash on delivery nationwide.',
     images: ['https://techplus.pk/images/techplus-og-share.png'],
   },
 };
@@ -63,6 +63,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.png" />
+        <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM Documentation" />
         {/* Google Sitelinks, WebSite, Organization & LocalBusiness Structured Data */}
         <script
           type="application/ld+json"

@@ -165,6 +165,8 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
             <img
               src={selectedImage || '/images/products/Polish_20201014_203208731-removebg-preview.png'}
               alt={`${product.title} - Techplus.pk Heavy Duty Copper Power Tools Pakistan`}
+              width={600}
+              height={600}
               className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
             />
           </div>

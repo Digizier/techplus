@@ -73,6 +73,8 @@ export default function Header() {
           <img
             src="/images/logo.png"
             alt="Techplus.pk - Heavy Duty Power Tools, Chainsaw Converters & Repair Services Pakistan"
+            width={160}
+            height={48}
             className="h-10 md:h-12 w-auto object-contain"
           />
         </Link>
@@ -241,7 +243,7 @@ export default function Header() {
           />
           <div className="absolute inset-y-0 left-0 w-4/5 max-w-sm bg-white shadow-2xl flex flex-col">
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-              <img src="/images/logo.png" alt="Techplus.pk" className="h-8 w-auto" />
+              <img src="/images/logo.png" alt="Techplus.pk" width={120} height={36} className="h-8 w-auto object-contain" />
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
