@@ -72,7 +72,7 @@ export default function Header() {
         <Link href="/" className="flex items-center gap-2 shrink-0">
           <img
             src="/images/logo.png"
-            alt="Techplus.pk"
+            alt="Techplus.pk - Heavy Duty Power Tools, Chainsaw Converters & Repair Services Pakistan"
             className="h-10 md:h-12 w-auto object-contain"
           />
         </Link>

@@ -17,6 +17,9 @@ export const metadata: Metadata = {
     shortcut: '/favicon.png',
     apple: '/favicon.png',
   },
+  alternates: {
+    canonical: 'https://techplus.pk',
+  },
   openGraph: {
     title: 'Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters & Repair Services',
     description:
@@ -60,6 +63,124 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.png" />
+        {/* Google Sitelinks, WebSite, Organization & LocalBusiness Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@graph': [
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://techplus.pk/#website',
+                  url: 'https://techplus.pk',
+                  name: 'Techplus.pk',
+                  description:
+                    'Heavy Duty Power Tools, Chainsaw Converters & Repair Services in Pakistan',
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: 'https://techplus.pk/shop?q={search_term_string}',
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://techplus.pk/#organization',
+                  name: 'Techplus.pk',
+                  url: 'https://techplus.pk',
+                  logo: 'https://techplus.pk/images/techplus-og-share.png',
+                  contactPoint: [
+                    {
+                      '@type': 'ContactPoint',
+                      telephone: '+92-323-5538700',
+                      contactType: 'customer service',
+                      areaServed: 'PK',
+                      availableLanguage: ['English', 'Urdu'],
+                    },
+                  ],
+                  sameAs: ['https://wa.me/923235538700'],
+                },
+                {
+                  '@type': 'HomeGoodsStore',
+                  '@id': 'https://techplus.pk/#localbusiness',
+                  name: 'Techplus.pk - Power Tools & Home Appliance Repair',
+                  image: 'https://techplus.pk/images/techplus-og-share.png',
+                  telephone: '+92-323-5538700',
+                  priceRange: 'PKR 1,500 - 45,000',
+                  address: {
+                    '@type': 'PostalAddress',
+                    addressLocality: 'Islamabad',
+                    addressRegion: 'Federal',
+                    addressCountry: 'PK',
+                  },
+                  geo: {
+                    '@type': 'GeoCoordinates',
+                    latitude: 33.6844,
+                    longitude: 73.0479,
+                  },
+                  url: 'https://techplus.pk',
+                  openingHoursSpecification: [
+                    {
+                      '@type': 'OpeningHoursSpecification',
+                      dayOfWeek: [
+                        'Monday',
+                        'Tuesday',
+                        'Wednesday',
+                        'Thursday',
+                        'Friday',
+                        'Saturday',
+                      ],
+                      opens: '09:00',
+                      closes: '21:00',
+                    },
+                  ],
+                },
+                {
+                  '@type': 'ItemList',
+                  '@id': 'https://techplus.pk/#sitelinks-navigation',
+                  name: 'Main Product Categories',
+                  itemListElement: [
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 1,
+                      name: 'Cordless Power Tools',
+                      description: 'Cordless drill machines and battery tools in Pakistan',
+                      url: 'https://techplus.pk/shop/cordless-power-tools',
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 2,
+                      name: 'Tool Converters & Adapters',
+                      description: 'Drill to chainsaw and saw converter kits',
+                      url: 'https://techplus.pk/shop/tool-converters',
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 3,
+                      name: 'Heavy Duty Drill Machines',
+                      description: '100% pure copper winding electric drilling machines',
+                      url: 'https://techplus.pk/shop/drill-machines',
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 4,
+                      name: 'AC & Home Appliance Repair',
+                      description: 'Doorstep AC chemical service and appliance repair in Islamabad',
+                      url: 'https://techplus.pk/services',
+                    },
+                    {
+                      '@type': 'SiteNavigationElement',
+                      position: 5,
+                      name: 'All Tools Catalog',
+                      description: 'Explore the full power tools catalog at Techplus',
+                      url: 'https://techplus.pk/shop',
+                    },
+                  ],
+                },
+              ],
+            }),
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function() {
@@ -123,7 +244,7 @@ export default function RootLayout({
           <span style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:6px 14px;border-radius:9999px;display:inline-block;margin-bottom:16px;">
             Website Access Locked • \${cycle} Payment Remaining
           </span>
-          <h1 style="font-size:26px;font-weight:800;color:#ffffff;margin:0 0 12px 0;">Nader Habib Payment Remaining</h1>
+          <div role="heading" aria-level="2" style="font-size:26px;font-weight:800;color:#ffffff;margin:0 0 12px 0;">Nader Habib Payment Remaining</div>
           <p style="font-size:15px;color:#9ca3af;line-height:1.6;margin:0 0 24px 0;">
             Your hosting subscription access is locked. Please contact Nader Habib on WhatsApp to pay remaining dues and restore access.
           </p>

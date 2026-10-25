@@ -261,6 +261,17 @@ export async function getAllCategorySlugs(): Promise<string[]> {
   return data.map((c) => c.slug);
 }
 
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  const { data, error } = await supabase
+    .from('categories')
+    .select('id, name, slug, parent_id, image_url, description, display_order, is_active, show_on_home')
+    .eq('slug', slug)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data as Category;
+}
+
 // Helper to ensure clean category columns and avoid schema errors (strips computed subcategories)
 function cleanCategoryPayload(payload: Partial<Category>) {
   const clean: any = {

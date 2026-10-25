@@ -164,7 +164,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
             )}
             <img
               src={selectedImage || '/images/products/Polish_20201014_203208731-removebg-preview.png'}
-              alt={product.title}
+              alt={`${product.title} - Techplus.pk Heavy Duty Copper Power Tools Pakistan`}
               className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
             />
           </div>
@@ -183,7 +183,7 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
                       : 'border-slate-200 hover:border-slate-300 opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-contain" />
+                  <img src={img} alt={`${product.title} view ${i + 1}`} className="w-full h-full object-contain" />
                 </button>
               ))}
             </div>

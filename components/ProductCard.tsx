@@ -67,7 +67,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         )}
         <img
           src={imageUrl}
-          alt={product.title}
+          alt={`${product.title} - Techplus Pakistan Power Tools`}
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
           className={`max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 ${

@@ -245,6 +245,56 @@ export default function HomePage() {
 
   return (
     <div className="space-y-8 md:space-y-14 pb-8 md:pb-12">
+      {/* Primary Semantic H1 for Search Engines (Crawled by Googlebot, Screen-reader accessible) */}
+      <h1 className="sr-only">
+        Techplus.pk | Heavy Duty Power Tools, Chainsaw Converters &amp; Repair Services in Pakistan
+      </h1>
+
+      {/* FAQ Schema for AEO (Answer Engine Optimization for ChatGPT, Perplexity & Google AI Overviews) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Does Techplus.pk deliver power tools and converters across Pakistan?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes! Techplus.pk delivers heavy-duty power tools, drill-to-chainsaw converter kits, cordless machines, and accessories nationwide across Pakistan with fast Cash on Delivery (COD) service.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Are Techplus power tools 100% pure copper motor winding?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes, Techplus strictly stocks authentic industrial grade tools with 100% pure copper motor armature for maximum torque, long duty cycles, and durability under demanding workloads.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How can I order AC repair and home appliance service in Islamabad or Rawalpindi?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'You can book doorstep AC chemical wash, repair, and home appliance maintenance directly through Techplus.pk/services or contact our helpline at 0323 5538700 for immediate service in Islamabad and Rawalpindi.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'What is the return and warranty policy at Techplus.pk?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'All tools sold by Techplus.pk are backed by our checking warranty and return/exchange guarantee. Customers can inspect their items upon delivery for complete peace of mind.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
+
       {/* 1. Dynamic Hero Banner (Pure Responsive Image - No text overlay) */}
       <HeroBanner />
 

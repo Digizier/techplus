@@ -1,0 +1,10 @@
+# Robots.txt for Techplus.pk
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /order-tracking
+
+# Sitemaps
+Sitemap: https://techplus.pk/sitemap.xml

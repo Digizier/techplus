@@ -62,7 +62,7 @@ export default function Footer() {
           <Link href="/" className="inline-block">
             <img
               src="/images/logo.png"
-              alt="Techplus.pk"
+              alt="Techplus.pk - Heavy Duty Power Tools, Chainsaw Converters & Repair Services Pakistan"
               className="h-10 md:h-12 w-auto object-contain brightness-110"
             />
           </Link>

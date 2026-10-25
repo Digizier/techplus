@@ -78,5 +78,86 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const resolvedParams = await params;
-  return <ProductDetailClient slug={resolvedParams.slug} />;
+  const product = await getProductBySlug(resolvedParams.slug);
+
+  const productSchema = product
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.title,
+        image: [getProductShareImageUrl(product)],
+        description:
+          product.short_description &&
+          product.short_description.trim() !== 'Description' &&
+          product.short_description.trim() !== ''
+            ? product.short_description.replace(/<[^>]*>/g, '').trim()
+            : `${product.title} - Authentic industrial grade tool with 100% pure copper motor available at Techplus.pk.`,
+        sku: product.sku || product.slug,
+        brand: {
+          '@type': 'Brand',
+          name: 'Techplus',
+        },
+        offers: {
+          '@type': 'Offer',
+          url: `https://techplus.pk/product/${product.slug}`,
+          priceCurrency: 'PKR',
+          price: product.price,
+          priceValidUntil: '2028-12-31',
+          itemCondition: 'https://schema.org/NewCondition',
+          availability:
+            product.stock > 0
+              ? 'https://schema.org/InStock'
+              : 'https://schema.org/OutOfStock',
+          seller: {
+            '@type': 'Organization',
+            name: 'Techplus.pk',
+          },
+        },
+      }
+    : null;
+
+  const breadcrumbSchema = product
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Home',
+            item: 'https://techplus.pk',
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Shop',
+            item: 'https://techplus.pk/shop',
+          },
+          {
+            '@type': 'ListItem',
+            position: 3,
+            name: product.title,
+            item: `https://techplus.pk/product/${product.slug}`,
+          },
+        ],
+      }
+    : null;
+
+  return (
+    <>
+      {productSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+      )}
+      {breadcrumbSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+        />
+      )}
+      <ProductDetailClient slug={resolvedParams.slug} />
+    </>
+  );
 }

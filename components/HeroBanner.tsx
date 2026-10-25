@@ -76,7 +76,7 @@ export default function HeroBanner() {
           />
           <img
             src={currentBanner.desktop_image_url}
-            alt="Promotional Banner"
+            alt={currentBanner.title ? `${currentBanner.title} - Techplus.pk Heavy Duty Tools` : 'Techplus.pk - Heavy Duty Power Tools, Chainsaw Converters & Repair Services in Pakistan'}
             className="w-full h-full object-contain md:object-cover transition-all duration-700 select-none"
             loading="eager"
           />
