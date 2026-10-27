@@ -68,6 +68,7 @@ async function generateSitemap() {
     { loc: `${BASE_URL}/`, priority: '1.0', changefreq: 'daily' },
     { loc: `${BASE_URL}/shop`, priority: '0.9', changefreq: 'daily' },
     { loc: `${BASE_URL}/services`, priority: '0.8', changefreq: 'weekly' },
+    { loc: `${BASE_URL}/profile`, priority: '0.7', changefreq: 'monthly' },
     { loc: `${BASE_URL}/about-us`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${BASE_URL}/contact-us`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${BASE_URL}/warranty-policy`, priority: '0.5', changefreq: 'monthly' },

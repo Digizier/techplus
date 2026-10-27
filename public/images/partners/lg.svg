@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 60" fill="none">
+    <circle cx="32" cy="30" r="20" fill="#a50034" />
+    <path d="M25 20 v20 h14" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="26" cy="27" r="2.5" fill="#ffffff" />
+    <text x="64" y="38" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="26" fill="#a50034" letter-spacing="1">LG</text>
+  </svg>

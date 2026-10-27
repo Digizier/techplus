@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+    <defs>
+      <linearGradient id="ac-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#082f49"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+    </defs>
+    <rect width="600" height="400" rx="24" fill="url(#ac-bg)"/>
+    <!-- Indoor Split AC Unit -->
+    <g transform="translate(60, 70)">
+      <rect x="0" y="0" width="340" height="110" rx="12" fill="#ffffff" stroke="#cbd5e1" stroke-width="3"/>
+      <!-- Air Louver Vents -->
+      <rect x="15" y="78" width="310" height="18" rx="6" fill="#f1f5f9"/>
+      <!-- Digital display -->
+      <circle cx="280" cy="45" r="16" fill="#0f172a"/>
+      <text x="272" y="50" font-family="sans-serif" font-size="13" fill="#38bdf8" font-weight="900">18°</text>
+      <!-- Cold Airflow waves -->
+      <path d="M40 110 Q60 160, 40 210" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4" opacity="0.8"/>
+      <path d="M120 110 Q150 160, 130 210" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4" opacity="0.8"/>
+      <path d="M200 110 Q230 160, 210 210" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4" opacity="0.8"/>
+      <path d="M280 110 Q300 160, 290 210" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4" opacity="0.8"/>
+    </g>
+    <!-- Outdoor Compressor Unit -->
+    <g transform="translate(360, 190)">
+      <rect x="0" y="0" width="180" height="150" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
+      <!-- Fan grill -->
+      <circle cx="90" cy="75" r="48" fill="#e2e8f0" stroke="#64748b" stroke-width="3"/>
+      <line x1="90" y1="27" x2="90" y2="123" stroke="#64748b" stroke-width="2"/>
+      <line x1="42" y1="75" x2="138" y2="75" stroke="#64748b" stroke-width="2"/>
+      <circle cx="90" cy="75" r="14" fill="#0f172a"/>
+      <!-- Brand badge on outdoor -->
+      <rect x="15" y="15" width="45" height="14" rx="3" fill="#0284c7"/>
+      <text x="20" y="25" font-family="sans-serif" font-size="8" fill="#ffffff" font-weight="bold">INVERTER</text>
+    </g>
+    <!-- High-Pressure Chemical Wash Gun & Gauge -->
+    <g transform="translate(90, 240)">
+      <rect x="0" y="0" width="170" height="75" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="14" y="28" font-family="sans-serif" font-size="11" fill="#f59e0b" font-weight="bold">Master Chemical Wash</text>
+      <text x="14" y="48" font-family="sans-serif" font-size="10" fill="#94a3b8">• High Pressure Gun</text>
+      <text x="14" y="63" font-family="sans-serif" font-size="10" fill="#94a3b8">• R410A / R32 Gas Refill</text>
+    </g>
+  </svg>

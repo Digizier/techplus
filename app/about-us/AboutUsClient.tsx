@@ -72,10 +72,16 @@ export default function AboutUsClient() {
 
         <div className="flex flex-wrap gap-3">
           <Link
-            href="/contact-us"
+            href="/profile"
             className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold text-xs rounded-xl shadow-xs transition-colors"
           >
-            Get Location & Directions
+            View Company Profile
+          </Link>
+          <Link
+            href="/contact-us"
+            className="px-5 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-colors"
+          >
+            Get Store Directions
           </Link>
           <a
             href={`tel:${settings.helpline_phone}`}

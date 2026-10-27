@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 60" fill="none">
+    <rect x="10" y="14" width="32" height="32" rx="8" fill="#f59e0b" />
+    <path d="M20 20 L32 40 M32 20 L20 40" stroke="#0f172a" stroke-width="4" stroke-linecap="round" />
+    <text x="52" y="38" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="22" fill="#0f172a" letter-spacing="2">KNOX</text>
+  </svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+    <defs>
+      <linearGradient id="sol-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0f172a"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </linearGradient>
+      <linearGradient id="sol-panel" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0284c7"/>
+        <stop offset="100%" stop-color="#0369a1"/>
+      </linearGradient>
+      <linearGradient id="sol-sun" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f59e0b"/>
+        <stop offset="100%" stop-color="#d97706"/>
+      </linearGradient>
+    </defs>
+    <rect width="600" height="400" rx="24" fill="url(#sol-bg)"/>
+    <!-- Sun -->
+    <circle cx="480" cy="100" r="50" fill="url(#sol-sun)" opacity="0.9"/>
+    <circle cx="480" cy="100" r="68" stroke="#f59e0b" stroke-width="2" stroke-dasharray="8 6" opacity="0.4"/>
+    <!-- Roof outline -->
+    <path d="M60 280 L300 170 L540 280" stroke="#475569" stroke-width="8" stroke-linecap="round"/>
+    <path d="M60 280 L60 360 L540 360 L540 280 Z" fill="#1e293b" opacity="0.7"/>
+    <!-- Solar Panels Array -->
+    <g transform="translate(130, 200) skewY(-8) scale(0.9)">
+      <!-- Panel 1 -->
+      <polygon points="0,40 100,0 130,70 30,110" fill="url(#sol-panel)" stroke="#38bdf8" stroke-width="2"/>
+      <line x1="50" y1="20" x2="80" y2="90" stroke="#bae6fd" stroke-width="1.5"/>
+      <line x1="15" y1="75" x2="115" y2="35" stroke="#bae6fd" stroke-width="1.5"/>
+      <!-- Panel 2 -->
+      <polygon points="110,0 210,-40 240,30 140,70" fill="url(#sol-panel)" stroke="#38bdf8" stroke-width="2"/>
+      <line x1="160" y1="-20" x2="190" y2="50" stroke="#bae6fd" stroke-width="1.5"/>
+      <line x1="125" y1="35" x2="225" y2="-5" stroke="#bae6fd" stroke-width="1.5"/>
+      <!-- Panel 3 -->
+      <polygon points="220,-40 320,-80 350,-10 250,30" fill="url(#sol-panel)" stroke="#38bdf8" stroke-width="2"/>
+      <line x1="270" y1="-60" x2="300" y2="10" stroke="#bae6fd" stroke-width="1.5"/>
+      <line x1="235" y1="-5" x2="335" y2="-45" stroke="#bae6fd" stroke-width="1.5"/>
+    </g>
+    <!-- Inverter box -->
+    <rect x="100" y="270" width="70" height="70" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <rect x="110" y="280" width="50" height="25" rx="4" fill="#0f172a"/>
+    <text x="116" y="297" font-family="monospace" font-size="11" fill="#22c55e" font-weight="bold">5.2 kW</text>
+    <circle cx="125" cy="322" r="4" fill="#22c55e"/>
+    <circle cx="145" cy="322" r="4" fill="#f59e0b"/>
+    <!-- Badge -->
+    <rect x="360" y="310" width="180" height="38" rx="19" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+    <text x="380" y="334" font-family="sans-serif" font-size="12" fill="#fbbf24" font-weight="bold">Since 2018 EPC Net-Metering</text>
+  </svg>

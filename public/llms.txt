@@ -1,9 +1,9 @@
 # Techplus.pk
 
-> Pakistan's authentic supplier of 100% pure copper motor power tools, electric drill to chainsaw converters, cordless drill kits, and verified appliance maintenance services based in Islamabad.
+> Pakistan's authentic supplier of 100% pure copper motor power tools, electric drill to chainsaw converters, cordless drill kits, and verified engineering & appliance maintenance services in Islamabad & Rawalpindi.
 
 ## About Techplus.pk
-Techplus.pk is an engineering and machinery supplier serving contractors, craftspeople, auto workshops, and homeowners across Pakistan. Every tool sold is verified for genuine copper winding to withstand heavy continuous duty cycles and regional voltage fluctuations.
+Techplus.pk is an engineering and machinery supplier serving contractors, craftspeople, auto workshops, and homeowners across Pakistan. Founded with 20+ years of electrical engineering legacy in Islamabad and offering turnkey solar EPC installation since 2018, every product and service adheres to rigorous quality standards and regional voltage resilience.
 
 ## Product Departments & Direct Links
 - [Chainsaw & Reciprocating Converters](https://techplus.pk/shop/tool-converters): Drill-to-chainsaw adapter kits (4-inch, 6-inch, angle grinder rods) starting from Rs. 2,499.
@@ -12,11 +12,22 @@ Techplus.pk is an engineering and machinery supplier serving contractors, crafts
 - [Polishers, Cutters & Pliers](https://techplus.pk/shop/hand-tools): Multifunctional wire strippers, miter shears, high-torque pliers, and rotary cutters.
 - [Complete Machinery Catalog](https://techplus.pk/shop): Full searchable inventory with live pricing and stock availability.
 
-## Technical & Appliance Services
-- [AC Repair & Solar Cleaning](https://techplus.pk/services): High-pressure chemical wash, gas recharge, split AC diagnostics, inverter repairs, and solar array maintenance in Islamabad & Rawalpindi.
+## Technical & Engineering Services
+- [OUR SERVICES](https://techplus.pk/services): Complete doorstep technical services in Islamabad & Rawalpindi.
+  1. **Solar System Installation**: Turnkey on-grid, off-grid, and hybrid solar installations since 2018 with complete IESCO net-metering approval.
+  2. **Electrical Services**: 20+ years of wide experience in house rewiring, DB box load balancing, and 24/7 short-circuit troubleshooting.
+  3. **Air Conditioning**: High-pressure chemical jet deep wash, genuine R410A/R32 gas refills, and inverter PCB diagnostics.
+  4. **Plumbing Services & Core Cutting**: Sanitary fittings, PPRC pipeline pressure testing, and precision diamond core cutting (2" to 8").
+  5. **CCTV & Biometric Time Attendance**: Hikvision & Dahua HD/IP cameras with mobile streaming and biometric face/fingerprint attendance.
+  6. **PABX & Computer Networking**: Cat6 structured cabling, server rack installations, TP-Link access points, and office intercoms.
+  7. **Fire Alarm System**: Optical smoke detectors, thermal heat sensors, break-glass call points, and central alarm panels.
+- [Our Repair Services (We Repair)](https://techplus.pk/services#book-service): Doorstep appliance repairs including AC, Cloth Iron, Refrigerator, Room Cooler, Fan, Washing Machine, Clothes Dryer, Microwave Oven, Geyser, and Vacuum Cleaner.
+
+## Corporate Credentials
+- [Company Profile](https://techplus.pk/profile): 20+ years electrical legacy, solar inception since 2018, certified in-house technicians, and authorized partner equipment (Huawei, GoodWe, Jinko Solar, Hikvision, Dahua, TP-Link, Panasonic, Knox, SAJ, LG).
 
 ## Ordering & Logistics
 - **Delivery**: Nationwide Cash on Delivery (COD) across Pakistan. 24-48 hours in Islamabad/Rawalpindi; 2-4 working days nationwide.
 - **Checking Guarantee**: Customers may inspect parcels on delivery for complete peace of mind.
-- **Helpline / WhatsApp**: +92 323 5538700 / +92 322 2685868
-- **Official Address**: Islamabad, Federal Capital, Pakistan.
+- **Helpline / WhatsApp**: +92 323 5538700 / +92 312 5556944
+- **Official Address**: Shop 07-B Chinar Plaza, St-48, G-6/1-1, Islamabad, Pakistan.

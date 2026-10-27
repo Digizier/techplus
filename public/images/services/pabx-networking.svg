@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+    <defs>
+      <linearGradient id="net-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#090d16"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </linearGradient>
+    </defs>
+    <rect width="600" height="400" rx="24" fill="url(#net-bg)"/>
+    <!-- Server Rack Cabinet -->
+    <g transform="translate(70, 60)">
+      <rect x="0" y="0" width="220" height="280" rx="14" fill="#0f172a" stroke="#475569" stroke-width="3"/>
+      <!-- Rack Rails -->
+      <line x1="20" y1="15" x2="20" y2="265" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/>
+      <line x1="200" y1="15" x2="200" y2="265" stroke="#334155" stroke-width="2" stroke-dasharray="6 4"/>
+      <!-- 1U Patch Panel -->
+      <rect x="25" y="25" width="170" height="30" rx="4" fill="#1e293b" stroke="#334155"/>
+      <circle cx="45" cy="40" r="3" fill="#22c55e"/>
+      <circle cx="65" cy="40" r="3" fill="#22c55e"/>
+      <circle cx="85" cy="40" r="3" fill="#22c55e"/>
+      <circle cx="105" cy="40" r="3" fill="#22c55e"/>
+      <circle cx="125" cy="40" r="3" fill="#f59e0b"/>
+      <circle cx="145" cy="40" r="3" fill="#22c55e"/>
+      <!-- 24-Port Switch -->
+      <rect x="25" y="65" width="170" height="35" rx="4" fill="#1e293b" stroke="#0284c7"/>
+      <!-- Gigabit blinking LEDs -->
+      <line x1="35" y1="78" x2="185" y2="78" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 4"/>
+      <line x1="35" y1="88" x2="185" y2="88" stroke="#4ade80" stroke-width="2" stroke-dasharray="4 4"/>
+      <!-- Cable Management D-Rings with Cat6 colored cables -->
+      <path d="M45 110 C45 170, 90 190, 110 220" stroke="#3b82f6" stroke-width="3" fill="none"/>
+      <path d="M65 110 C65 160, 110 180, 130 220" stroke="#eab308" stroke-width="3" fill="none"/>
+      <path d="M85 110 C85 150, 130 170, 150 220" stroke="#10b981" stroke-width="3" fill="none"/>
+      <!-- PABX Unit in rack -->
+      <rect x="25" y="225" width="170" height="40" rx="4" fill="#334155"/>
+      <text x="35" y="250" font-family="sans-serif" font-size="11" fill="#f8fafc" font-weight="bold">PABX INTERCOM 32-EXT</text>
+    </g>
+    <!-- Office Intercom Desk Phone -->
+    <g transform="translate(340, 90)">
+      <polygon points="20,180 180,180 160,50 40,50" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+      <!-- Handset -->
+      <rect x="15" y="30" width="35" height="150" rx="12" fill="#0f172a" stroke="#64748b" stroke-width="1.5"/>
+      <!-- Display -->
+      <rect x="65" y="65" width="85" height="40" rx="4" fill="#0284c7"/>
+      <text x="75" y="88" font-family="monospace" font-size="12" fill="#ffffff" font-weight="bold">EXT 101</text>
+      <!-- Keypad -->
+      <circle cx="80" cy="125" r="6" fill="#475569"/>
+      <circle cx="105" cy="125" r="6" fill="#475569"/>
+      <circle cx="130" cy="125" r="6" fill="#475569"/>
+      <circle cx="80" cy="145" r="6" fill="#475569"/>
+      <circle cx="105" cy="145" r="6" fill="#475569"/>
+      <circle cx="130" cy="145" r="6" fill="#475569"/>
+    </g>
+    <!-- Feature badge -->
+    <g transform="translate(330, 275)">
+      <rect x="0" y="0" width="210" height="65" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="15" y="25" font-family="sans-serif" font-size="11" fill="#f59e0b" font-weight="bold">Enterprise Cabling & PABX</text>
+      <text x="15" y="42" font-family="sans-serif" font-size="10" fill="#cbd5e1">• 100% Tested Cat6 Runs</text>
+      <text x="15" y="56" font-family="sans-serif" font-size="10" fill="#cbd5e1">• TP-Link Seamless Wi-Fi Roaming</text>
+    </g>
+  </svg>

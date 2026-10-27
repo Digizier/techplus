@@ -197,17 +197,22 @@ export default function Footer() {
           <ul className="space-y-2 md:space-y-2.5 text-xs text-slate-400">
             <li>
               <Link href="/services" className="hover:text-brand-400 transition-colors">
-                AC Repair & Cleaning
+                Solar Installation (Since 2018)
               </Link>
             </li>
             <li>
               <Link href="/services" className="hover:text-brand-400 transition-colors">
-                Solar System Installation
+                Electrical Services (20+ Years)
               </Link>
             </li>
             <li>
               <Link href="/services" className="hover:text-brand-400 transition-colors">
-                Home Appliance Repair
+                AC Jet Wash & Gas Charging
+              </Link>
+            </li>
+            <li>
+              <Link href="/services" className="hover:text-brand-400 transition-colors">
+                Home Appliance Repair Services
               </Link>
             </li>
             <li>
@@ -252,6 +257,11 @@ export default function Footer() {
             <li>
               <Link href="/about-us" className="hover:text-brand-400 transition-colors">
                 About Our Company
+              </Link>
+            </li>
+            <li>
+              <Link href="/profile" className="text-brand-400 hover:text-brand-300 font-semibold transition-colors">
+                Company Profile (PDF/Overview)
               </Link>
             </li>
           </ul>

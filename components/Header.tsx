@@ -219,11 +219,14 @@ export default function Header() {
               className="py-3 px-3 hover:text-brand-600 transition-colors flex items-center gap-1.5 text-slate-900 font-bold"
             >
               <Zap className="w-3.5 h-3.5 text-amber-500 fill-current" />
-              <span>AC & Solar Services</span>
+              <span>Our Services</span>
             </Link>
           </div>
 
           <div className="flex items-center gap-4 text-slate-500">
+            <Link href="/profile" className="hover:text-slate-900 transition-colors font-medium">
+              Company Profile
+            </Link>
             <Link href="/about-us" className="hover:text-slate-900 transition-colors">
               About
             </Link>
@@ -304,7 +307,14 @@ export default function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className="block px-3 py-2 rounded-xl hover:bg-slate-100 text-brand-600 font-bold"
                   >
-                    AC, Appliance & Solar Services
+                    Our Services (Solar, Electrical, AC)
+                  </Link>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-xl hover:bg-slate-100 font-bold text-slate-800"
+                  >
+                    Company Profile
                   </Link>
                   <Link
                     href="/order-tracking"

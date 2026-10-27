@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+    <defs>
+      <linearGradient id="cctv-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#020617"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+    </defs>
+    <rect width="600" height="400" rx="24" fill="url(#cctv-bg)"/>
+    <!-- Hikvision/Dahua Bullet Camera -->
+    <g transform="translate(80, 80)">
+      <!-- Mount bracket -->
+      <rect x="10" y="12" width="20" height="60" rx="4" fill="#475569"/>
+      <path d="M30 42 L70 42" stroke="#475569" stroke-width="12" stroke-linecap="round"/>
+      <!-- Camera Cylinder Body -->
+      <rect x="70" y="15" width="140" height="60" rx="10" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+      <!-- Sunshield -->
+      <path d="M60 12 L220 12 L200 24 L60 24 Z" fill="#334155"/>
+      <!-- Lens -->
+      <circle cx="210" cy="45" r="24" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+      <circle cx="210" cy="45" r="10" fill="#1e293b"/>
+      <circle cx="210" cy="45" r="3" fill="#ef4444"/>
+      <!-- IR LEDs ring -->
+      <circle cx="210" cy="45" r="18" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 3"/>
+      <!-- Field of view cone -->
+      <polygon points="230,45 360,0 360,110" fill="#38bdf8" opacity="0.12"/>
+    </g>
+    <!-- Biometric Time Attendance Machine -->
+    <g transform="translate(350, 90)">
+      <rect x="0" y="0" width="180" height="230" rx="16" fill="#1e293b" stroke="#334155" stroke-width="3"/>
+      <!-- Screen -->
+      <rect x="20" y="20" width="140" height="80" rx="8" fill="#0f172a"/>
+      <circle cx="50" cy="55" r="18" fill="#334155"/>
+      <text x="80" y="50" font-family="sans-serif" font-size="11" fill="#4ade80" font-weight="bold">Verified ID</text>
+      <text x="80" y="68" font-family="sans-serif" font-size="10" fill="#94a3b8">09:00:15 AM</text>
+      <!-- Fingerprint optical scanner -->
+      <rect x="55" y="125" width="70" height="70" rx="10" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+      <!-- Fingerprint pattern -->
+      <path d="M75 160 C75 145, 105 145, 105 160 C105 175, 80 180, 90 190" stroke="#bae6fd" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M83 160 C83 150, 97 150, 97 160" stroke="#ffffff" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <!-- Mobile App Streaming Icon -->
+    <g transform="translate(80, 230)">
+      <rect x="0" y="0" width="220" height="80" rx="12" fill="#1e293b" stroke="#0284c7" stroke-width="1.5"/>
+      <text x="18" y="32" font-family="sans-serif" font-size="12" fill="#38bdf8" font-weight="bold">HD 24/7 Remote Live View</text>
+      <text x="18" y="52" font-family="sans-serif" font-size="10" fill="#cbd5e1">• Mobile App Access anywhere</text>
+      <text x="18" y="68" font-family="sans-serif" font-size="10" fill="#cbd5e1">• Face & Fingerprint Attendance Sync</text>
+    </g>
+  </svg>

@@ -1,14 +1,15 @@
 # Techplus.pk - Complete Technical & Product Reference
 
-> Pakistan's official portal for 100% pure copper power tools, chainsaw converters, cordless workshop machinery, and residential appliance maintenance.
+> Pakistan's official portal for 100% pure copper power tools, chainsaw converters, cordless workshop machinery, and comprehensive engineering & appliance maintenance services in Islamabad & Rawalpindi.
 
 ## Canonical Domain Information
 - Official Website: https://techplus.pk
 - Primary Catalog: https://techplus.pk/shop
 - Services Booking: https://techplus.pk/services
+- Company Profile: https://techplus.pk/profile
 - Customer Care Phone: +92 323 5538700
-- Secondary Support: +92 322 2685868
-- Headquarters: Islamabad, Pakistan
+- Secondary Support: +92 312 5556944
+- Headquarters: Shop 07-B Chinar Plaza, St-48, G-6/1-1, Islamabad, Pakistan
 - Operational Coverage: All provinces and territories across Pakistan (Punjab, Sindh, Khyber Pakhtunkhwa, Balochistan, Islamabad Capital Territory, Azad Kashmir, Gilgit-Baltistan).
 
 ## Quality Standard: Pure Copper Armature vs. Aluminium
@@ -40,14 +41,33 @@ Heavy-duty hammer drills designed for masonry, concrete breaking, and brick anch
 - Multifunctional 9-in-1 electrician pliers (wire stripper, crimper, bolt cutter, needle nose).
 - 45° to 135° adjustable miter shears for PVC trunking, plastic pipes, and wood molding.
 
-## Service Operations (Islamabad & Rawalpindi)
-Techplus provides certified technician visits for residential and commercial appliance servicing:
-- Master AC Chemical Washing: Indoor coil dismantle, high-pressure jet wash, blower disinfection.
-- Refrigerant Gas Top-Up: R22, R410A, and R32 pressure diagnostics and leak testing.
-- Inverter PCB Diagnostics: Error code analysis, sensor replacement, and compressor checking.
-- Solar Array Maintenance: High-pressure deionized panel washing for peak photovoltaic output.
+## Technical & Engineering Divisions (Islamabad & Rawalpindi)
+Techplus provides certified doorstep engineering and facility solutions across Islamabad and Rawalpindi:
+
+1. **Solar System Installation (EPC)**: Offering solar installations since 2018. Turnkey on-grid, off-grid, and hybrid solutions with complete IESCO net-metering and green meter approval. Tier-1 Jinko bifacial panels and GoodWe, Huawei, SAJ, and Knox inverters.
+2. **Electrical Services**: 20+ years of active field experience in Islamabad. Residential and commercial rewiring, distribution board (DB) load balancing, 3-phase changeover switches, and 24/7 short-circuit emergency diagnostics using Pakistan Cables pure copper.
+3. **Air Conditioning (HVAC)**: On-wall high-pressure chemical jet deep washing, genuine R410A / R32 gas recharging, copper piping installation with nitrogen pressure testing, and inverter PCB micro-soldering repairs.
+4. **Plumbing Services & Diamond Core Cutting**: PPRC/CPVC hot and cold water sanitary piping, motorized drain blockage clearing, and non-destructive diamond core cutting from 2" to 8" without structural wall cracking.
+5. **CCTV & Biometric Time Attendance**: Hikvision & Dahua HD/IP security camera systems with ColorVu night vision, NVR storage, remote iOS/Android smartphone live view, and biometric face/fingerprint attendance clock-in machines.
+6. **PABX & Computer Networking**: Fluke-tested Cat6 structured cabling, server rack installations, TP-Link multi-floor mesh Wi-Fi access points, and Panasonic PABX intercom systems.
+7. **Fire Alarm System**: Certified addressable and conventional life safety systems including optical smoke detectors, thermal heat sensors, break-glass manual stations, and central annunciator alarm panels.
+
+## Doorstep Home Appliance Repair Division (We Repair)
+- **Air Conditioner**: Inverter error codes, capacitor, gas charging, blower motor.
+- **Cloth Iron**: Heating element, thermostat replacement, heavy-duty power cords.
+- **Refrigerator & Deep Freezer**: Inverter compressor relay, gas refill, thermostat.
+- **Room Cooler**: Motor copper rewinding, water pump, cooling honeycomb pads.
+- **Ceiling & Pedestal Fan**: Copper rewinding, capacitor, shaft and bearing overhaul.
+- **Automatic Washing Machine**: Gearbox rebuild, drain motor, PCB logic board, suspension.
+- **Clothes Dryer / Spinner**: Belt replacement, drum balancing, motor repair.
+- **Microwave Oven**: Magnetron tube replacement, high-voltage diode, touchpad fix.
+- **Gas & Electric Geyser**: Thermostat, heating element, pilot burner cleaning.
+- **Vacuum Cleaner**: Suction turbine motor replacement, carbon brush servicing.
+
+## Equipment Standards & Partner Brands
+- Huawei, GoodWe, Jinko Solar, Hikvision, Dahua, TP-Link, Panasonic, Knox, SAJ, LG.
 
 ## Ordering, Shipping & Warranty
 - Payment: Cash on Delivery (COD), JazzCash, EasyPaisa, Direct Bank Transfer.
-- Delivery Speed: 1-2 days within Islamabad/Rawalpindi; 2-4 working days to Karachi, Lahore, Faisalabad, Multan, Sialkot, Peshawar, Quetta, and all tehsils.
-- Warranty: Checking warranty with replacement support for transit damage or manufacturing defects.
+- Delivery Speed: 1-2 days within Islamabad/Rawalpindi; 2-4 working days to Karachi, Lahore, Faisalabad, Multan, Sialkot, Peshawar, Quetta, and all nationwide tehsils.
+- Warranty: Checking warranty with full replacement support for transit damage or manufacturing defects.

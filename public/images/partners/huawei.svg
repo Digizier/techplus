@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" fill="none">
+    <g transform="translate(15, 6)">
+      <!-- Huawei Petals Icon -->
+      <path d="M22 28 C22 18, 16 12, 16 12 C16 12, 10 18, 10 28 Z" fill="#cf0a2c" />
+      <path d="M22 28 C26 20, 24 14, 24 14 C24 14, 18 17, 16 26 Z" fill="#cf0a2c" opacity="0.9" />
+      <path d="M10 28 C6 20, 8 14, 8 14 C8 14, 14 17, 16 26 Z" fill="#cf0a2c" opacity="0.9" />
+      <path d="M22 28 C28 24, 29 18, 29 18 C29 18, 22 18, 18 26 Z" fill="#cf0a2c" opacity="0.8" />
+      <path d="M10 28 C4 24, 3 18, 3 18 C3 18, 10 18, 14 26 Z" fill="#cf0a2c" opacity="0.8" />
+    </g>
+    <text x="55" y="36" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="20" fill="#cf0a2c" letter-spacing="3">HUAWEI</text>
+  </svg>

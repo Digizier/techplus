@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" fill="none">
+    <defs>
+      <linearGradient id="elec-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#090d16"/>
+        <stop offset="100%" stop-color="#1e1e2d"/>
+      </linearGradient>
+    </defs>
+    <rect width="600" height="400" rx="24" fill="url(#elec-bg)"/>
+    <!-- DB Panel box -->
+    <rect x="70" y="70" width="260" height="260" rx="16" fill="#1e293b" stroke="#334155" stroke-width="4"/>
+    <rect x="85" y="85" width="230" height="230" rx="10" fill="#0f172a"/>
+    <!-- DIN Rail Breakers -->
+    <rect x="100" y="110" width="200" height="50" rx="6" fill="#334155"/>
+    <rect x="105" y="115" width="26" height="40" rx="4" fill="#f1f5f9"/>
+    <line x1="118" y1="120" x2="118" y2="135" stroke="#ef4444" stroke-width="4"/>
+    <rect x="135" y="115" width="26" height="40" rx="4" fill="#f1f5f9"/>
+    <line x1="148" y1="120" x2="148" y2="135" stroke="#ef4444" stroke-width="4"/>
+    <rect x="165" y="115" width="26" height="40" rx="4" fill="#f1f5f9"/>
+    <line x1="178" y1="130" x2="178" y2="145" stroke="#22c55e" stroke-width="4"/>
+    <rect x="195" y="115" width="26" height="40" rx="4" fill="#f1f5f9"/>
+    <line x1="208" y1="130" x2="208" y2="145" stroke="#22c55e" stroke-width="4"/>
+    <rect x="225" y="115" width="26" height="40" rx="4" fill="#f1f5f9"/>
+    <line x1="238" y1="130" x2="238" y2="145" stroke="#22c55e" stroke-width="4"/>
+    <rect x="255" y="115" width="35" height="40" rx="4" fill="#d97706"/>
+    <!-- Copper wires -->
+    <path d="M118 160 C118 200, 160 220, 200 240" stroke="#ef4444" stroke-width="3" fill="none"/>
+    <path d="M148 160 C148 190, 190 220, 230 240" stroke="#f59e0b" stroke-width="3" fill="none"/>
+    <path d="M178 160 C178 180, 220 220, 260 240" stroke="#3b82f6" stroke-width="3" fill="none"/>
+    <!-- Digital Multimeter -->
+    <g transform="translate(370, 90)">
+      <rect x="0" y="0" width="160" height="230" rx="18" fill="#f59e0b" stroke="#d97706" stroke-width="3"/>
+      <rect x="14" y="20" width="132" height="60" rx="8" fill="#0f172a"/>
+      <text x="32" y="58" font-family="monospace" font-size="28" fill="#4ade80" font-weight="900">232.4 V</text>
+      <!-- Dial -->
+      <circle cx="80" cy="130" r="32" fill="#1e293b"/>
+      <line x1="80" y1="130" x2="96" y2="114" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+      <!-- Probes -->
+      <path d="M40 230 C40 280, 0 300, -20 270" stroke="#ef4444" stroke-width="5" fill="none"/>
+      <path d="M120 230 C120 280, 160 300, 180 270" stroke="#0f172a" stroke-width="5" fill="none"/>
+    </g>
+    <!-- 20+ Years Stamp -->
+    <circle cx="480" cy="330" r="36" fill="#0f172a" stroke="#f59e0b" stroke-width="2"/>
+    <text x="458" y="328" font-family="sans-serif" font-size="16" fill="#f59e0b" font-weight="900">20+</text>
+    <text x="455" y="344" font-family="sans-serif" font-size="9" fill="#e2e8f0" font-weight="bold">YEARS EXP</text>
+  </svg>
