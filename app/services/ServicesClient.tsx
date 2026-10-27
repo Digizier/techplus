@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Sun,
@@ -20,18 +20,91 @@ import {
   MapPin,
   ChevronRight,
   ChevronLeft,
-  Flame,
-  Tv,
   Check,
 } from 'lucide-react';
 import { createServiceInquiry } from '@/lib/db';
 import { useSettings } from '@/lib/settings-context';
+
+// Continuous smooth auto-scrolling hook matching home page category menu
+function useContinuousScroll(
+  ref: React.RefObject<HTMLDivElement | null>,
+  speed: number = 0.8,
+  isActive: boolean = true
+) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !isActive) return;
+
+    let isInteracting = false;
+    let resumeTimer: ReturnType<typeof setTimeout> | null = null;
+    let animId: number;
+    let accumulator = 0;
+
+    el.style.scrollBehavior = 'auto';
+
+    const pause = () => {
+      isInteracting = true;
+      if (resumeTimer) clearTimeout(resumeTimer);
+    };
+
+    const resume = (delay = 2000) => {
+      if (resumeTimer) clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        isInteracting = false;
+      }, delay);
+    };
+
+    const handleMouseEnter = () => pause();
+    const handleMouseLeave = () => resume(600);
+    const handleTouchStart = () => pause();
+    const handleTouchEnd = () => resume(2000);
+
+    el.addEventListener('mouseenter', handleMouseEnter);
+    el.addEventListener('mouseleave', handleMouseLeave);
+    el.addEventListener('touchstart', handleTouchStart, { passive: true });
+    el.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    const tick = () => {
+      if (!isInteracting && el) {
+        const halfWidth = el.scrollWidth / 2;
+        if (halfWidth > 0 && halfWidth > el.clientWidth) {
+          accumulator += speed;
+          if (accumulator >= 1) {
+            const step = Math.floor(accumulator);
+            accumulator -= step;
+            el.scrollLeft += step;
+            if (el.scrollLeft >= halfWidth) {
+              el.scrollLeft -= halfWidth;
+            } else if (el.scrollLeft <= 0) {
+              el.scrollLeft += halfWidth;
+            }
+          }
+        }
+      }
+      animId = requestAnimationFrame(tick);
+    };
+
+    animId = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      if (resumeTimer) clearTimeout(resumeTimer);
+      el.removeEventListener('mouseenter', handleMouseEnter);
+      el.removeEventListener('mouseleave', handleMouseLeave);
+      el.removeEventListener('touchstart', handleTouchStart);
+      el.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [ref, speed, isActive]);
+}
 
 export default function ServicesClient() {
   const { settings } = useSettings();
 
   // Active service index for the main slider / detail view
   const [activeServiceIdx, setActiveServiceIdx] = useState(0);
+
+  // Scroll ref for horizontal tabs carousel
+  const tabsScrollRef = useRef<HTMLDivElement | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -53,10 +126,9 @@ export default function ServicesClient() {
       number: '01',
       title: 'Solar System Installation',
       subtitle: 'On-Grid, Hybrid & Net-Metering Solutions Since 2018',
-      image: '/images/services/solar-installation.svg',
-      alt: 'Solar system installation and net-metering services Islamabad Techplus',
+      image: '/images/services/solar-installation.jpg',
+      alt: 'Residential rooftop solar system installation Islamabad Techplus',
       tagline: 'Offering Solar System Installation Since 2018',
-      // Strictly 2-4 lines of humanized, solid text (Audio 2 & Humanizer skill)
       lines: [
         'Techplus has delivered residential and commercial solar setups across Islamabad and Rawalpindi since 2018.',
         'We engineer customized on-grid, off-grid, and hybrid systems using Tier-1 Jinko solar panels and GoodWe, SAJ, Huawei or Knox inverters.',
@@ -69,17 +141,15 @@ export default function ServicesClient() {
         'Heavy-Duty Elevated Structure for Islamabad Storms',
       ],
       icon: Sun,
-      color: 'from-amber-500 to-orange-600',
     },
     {
       id: 'electrical',
       number: '02',
       title: 'Electrical Services',
       subtitle: '20+ Years Wide Experience in Islamabad & Rawalpindi',
-      image: '/images/services/electrical-services.svg',
-      alt: 'Electrical wiring and distribution box maintenance Islamabad Techplus',
+      image: '/images/services/electrical-services.jpg',
+      alt: 'Professional licensed electrician distribution board wiring Islamabad Techplus',
       tagline: 'Wide Field Experience from More Than 20 Years',
-      // Strictly 2-4 lines of humanized, solid text
       lines: [
         'We offer premier electrical services for homes, corporate offices, and plazas in Islamabad with over 20 years of hands-on experience.',
         'Our certified master electricians handle full house rewiring, DB load balancing, 3-phase changeover switches, and urgent short-circuit emergencies.',
@@ -92,17 +162,15 @@ export default function ServicesClient() {
         'Pure Copper Wiring with Safe Grounding / Earthing',
       ],
       icon: Zap,
-      color: 'from-yellow-500 to-amber-600',
     },
     {
       id: 'ac',
       number: '03',
       title: 'Air Conditioning',
       subtitle: 'Master Chemical Wash, Gas Refill & Inverter Troubleshooting',
-      image: '/images/services/air-conditioning.svg',
-      alt: 'AC high pressure chemical wash and compressor repair Islamabad Techplus',
+      image: '/images/services/air-conditioning.jpg',
+      alt: 'HVAC technician chemical wash split AC cleaning Islamabad Techplus',
       tagline: 'Precision Split & Inverter AC Maintenance',
-      // Strictly 2-4 lines of humanized, solid text
       lines: [
         'Doorstep AC installation, master chemical jet cleaning, and PCB inverter repair across Islamabad and Rawalpindi.',
         'We perform high-pressure water gun washing of indoor blowers and outdoor condenser coils without taking the units down from the wall.',
@@ -115,17 +183,15 @@ export default function ServicesClient() {
         'Copper Piping Installation with Nitrogen Leak Testing',
       ],
       icon: Wind,
-      color: 'from-cyan-500 to-blue-600',
     },
     {
       id: 'plumbing',
       number: '04',
       title: 'Plumbing Services & Core Cutting',
       subtitle: 'Sanitary Fittings, Pipeline Leak Detection & Diamond Core Cutting',
-      image: '/images/services/plumbing-core-cutting.svg',
-      alt: 'Plumbing sanitary fittings and diamond core cutting Islamabad Techplus',
+      image: '/images/services/plumbing-core-cutting.jpg',
+      alt: 'Diamond core cutting machine and sanitary plumbing pipes Islamabad Techplus',
       tagline: 'Leak-Free Sanitary Piping & Clean Core Cutting',
-      // Strictly 2-4 lines of humanized, solid text
       lines: [
         'Complete sanitary plumbing, PPRC and CPVC pipe heat-fusing, and modern bathroom fixture installations for homes and commercial plazas.',
         'We specialize in precision diamond core cutting from 2 to 8 inches for AC piping, exhaust ducts, and plumbing lines without cracking your concrete walls or beams.',
@@ -138,17 +204,15 @@ export default function ServicesClient() {
         'Water Tank Cleaning, Automatic Float Valves & Pressure Pumps',
       ],
       icon: Wrench,
-      color: 'from-emerald-500 to-teal-600',
     },
     {
       id: 'cctv',
       number: '05',
       title: 'CCTV & Biometric Time Attendance',
       subtitle: 'Hikvision & Dahua HD/IP Cameras with Live Mobile View',
-      image: '/images/services/cctv-biometric.svg',
-      alt: 'CCTV security camera installation and biometric attendance Islamabad Techplus',
+      image: '/images/services/cctv-biometric.jpg',
+      alt: 'Commercial 4K CCTV camera and biometric fingerprint time attendance terminal Islamabad Techplus',
       tagline: 'High-Definition Surveillance & Cloud Attendance',
-      // Strictly 2-4 lines of humanized, solid text
       lines: [
         'End-to-end security camera installation for residences, offices, schools, and commercial warehouses in Islamabad and Rawalpindi.',
         'We set up Dahua and Hikvision HD IP cameras with color night vision, motion sensing, remote smartphone streaming, and centralized NVR storage.',
@@ -161,17 +225,15 @@ export default function ServicesClient() {
         'Fingerprint & Face Recognition Biometric Time Clocks',
       ],
       icon: Camera,
-      color: 'from-blue-600 to-indigo-700',
     },
     {
       id: 'networking',
       number: '06',
       title: 'PABX & Computer Networking',
       subtitle: 'Structured Cat6 Cabling, Server Racks & Office Intercoms',
-      image: '/images/services/pabx-networking.svg',
-      alt: 'Structured computer networking Cat6 and PABX intercom Islamabad Techplus',
+      image: '/images/services/pabx-networking.jpg',
+      alt: 'Enterprise server rack Cat6 patch cables and office IP PABX phone Islamabad Techplus',
       tagline: 'Seamless Office Communications & High-Speed LAN',
-      // Strictly 2-4 lines of humanized, solid text
       lines: [
         'Complete corporate IT networking, structured Cat6 cable routing, patch panel punch-downs, and server rack installations.',
         'We eliminate office Wi-Fi dead zones using enterprise TP-Link and Ubiquiti access points with seamless roaming across multiple floors.',
@@ -184,17 +246,15 @@ export default function ServicesClient() {
         'Fluke-Tested Cable Crimping & Network Troubleshooting',
       ],
       icon: Network,
-      color: 'from-purple-600 to-indigo-800',
     },
     {
       id: 'firealarm',
       number: '07',
       title: 'Fire Alarm System',
       subtitle: 'Addressable & Conventional Smoke, Heat & Siren Systems',
-      image: '/images/services/fire-alarm-system.svg',
-      alt: 'Fire alarm smoke detectors and alarm panels Islamabad Techplus',
+      image: '/images/services/fire-alarm-system.jpg',
+      alt: 'Commercial smoke detector and fire alarm control panel Islamabad Techplus',
       tagline: 'Reliable Life & Asset Safety Systems',
-      // Strictly 2-4 lines of humanized, solid text
       lines: [
         'Certified fire safety solutions protecting residential houses, restaurants, corporate offices, and commercial basements in Islamabad.',
         'We install optical smoke detectors, rate-of-rise heat sensors, manual break-glass call points, and high-decibel strobe sirens.',
@@ -207,23 +267,20 @@ export default function ServicesClient() {
         'Annual Maintenance Inspections & Loop Testing',
       ],
       icon: BellRing,
-      color: 'from-rose-600 to-red-700',
     },
   ];
 
-  // 10 Repair appliances from Visiting Card and Audio 1
-  const repairAppliances = [
-    { name: 'Air Conditioner (Split / Inverter)', icon: '❄️', desc: 'Gas charging, PCB repair, blower motor & compressor.' },
-    { name: 'Cloth Iron (Electric & Steam)', icon: '👔', desc: 'Thermostat replacement, heating element & cord wiring.' },
-    { name: 'Refrigerator & Deep Freezer', icon: '🧊', desc: 'Gas refill, inverter compressor relay & thermostat.' },
-    { name: 'Room Cooler', icon: '💨', desc: 'Motor rewinding, pump replacement & water distribution pads.' },
-    { name: 'Ceiling & Pedestal Fan', icon: '🌀', desc: 'Pure copper rewinding, capacitor, shaft & bearing replacement.' },
-    { name: 'Automatic Washing Machine', icon: '🧺', desc: 'Gearbox repair, drainage pump, PCB board & drum suspension.' },
-    { name: 'Clothes Dryer / Spinner', icon: '🔄', desc: 'Belt replacement, motor balancing, brake pad & timer switch.' },
-    { name: 'Microwave Oven', icon: '🍲', desc: 'Magnetron replacement, high voltage diode & keypad touch repair.' },
-    { name: 'Gas & Electric Geyser', icon: '🔥', desc: 'Pilot burner cleaning, thermostat & heating element change.' },
-    { name: 'Vacuum Cleaner', icon: '🧹', desc: 'Suction turbine motor repair, carbon brushes & cord retractors.' },
-  ];
+  // Repeat for continuous seamless horizontal auto-scroll loop
+  const repeatedServices = [...coreServices, ...coreServices];
+
+  // Hook for continuous auto-scrolling
+  useContinuousScroll(tabsScrollRef, 0.75, true);
+
+  const scrollTabs = (direction: 'left' | 'right') => {
+    if (!tabsScrollRef.current) return;
+    const scrollAmount = direction === 'left' ? -260 : 260;
+    tabsScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
 
   // Partner brands from Visiting Card
   const partnerBrands = [
@@ -295,7 +352,7 @@ export default function ServicesClient() {
   const CurrentIcon = currentService.icon;
 
   return (
-    <div className="space-y-16 pb-20">
+    <div className="space-y-14 pb-20">
       {/* 1. HERO BANNER: OUR SERVICES */}
       <section className="bg-slate-950 text-white rounded-3xl p-6 sm:p-10 md:p-14 border border-slate-800 relative overflow-hidden shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -359,69 +416,111 @@ export default function ServicesClient() {
         </div>
       </section>
 
-      {/* 2. CORE TECHNICAL SERVICES SHOWCASE WITH SLIDER / GALLERY */}
+      {/* 2. CORE TECHNICAL SERVICES SHOWCASE */}
       <section className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
-            <span className="text-xs font-bold text-brand-600 uppercase tracking-widest">
+            <span className="text-xs font-bold text-brand-600 uppercase tracking-widest block mb-0.5">
               Field Solutions
             </span>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-900">
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
               Core Engineering Services
             </h2>
           </div>
-          <div className="text-xs text-slate-500">
-            Click any service tab below or use arrows to view work pictures and technical details.
+
+          {/* Carousel Arrows matching Home Page */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500 hidden md:inline">Swipe or use arrows:</span>
+            <button
+              type="button"
+              onClick={() => scrollTabs('left')}
+              className="p-2 bg-white hover:bg-slate-100 text-slate-700 rounded-full border border-slate-200 shadow-2xs transition-colors"
+              aria-label="Scroll Services Left"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollTabs('right')}
+              className="p-2 bg-white hover:bg-slate-100 text-slate-700 rounded-full border border-slate-200 shadow-2xs transition-colors"
+              aria-label="Scroll Services Right"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        {/* Service Selector Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-          {coreServices.map((srv, idx) => {
+        {/* CONTINUOUS SMOOTH AUTO-SCROLLING HORIZONTAL TABS CAROUSEL (Touch & drag enabled) */}
+        <div
+          ref={tabsScrollRef}
+          className="flex items-center gap-3 overflow-x-auto scrollbar-none no-scrollbar py-2 -mx-4 px-4 md:mx-0 md:px-0 select-none cursor-grab active:cursor-grabbing"
+          style={{ scrollBehavior: 'auto' }}
+        >
+          {repeatedServices.map((srv, idx) => {
+            const originalIdx = idx % coreServices.length;
             const Icon = srv.icon;
-            const isSelected = idx === activeServiceIdx;
+            const isSelected = originalIdx === activeServiceIdx;
             return (
               <button
-                key={srv.id}
+                key={`${srv.id}-${idx}`}
                 type="button"
-                onClick={() => setActiveServiceIdx(idx)}
-                className={`flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-xs shrink-0 transition-all ${
+                onClick={() => setActiveServiceIdx(originalIdx)}
+                className={`flex items-center gap-2.5 px-4 sm:px-5 py-3 rounded-2xl font-bold text-xs shrink-0 transition-all border ${
                   isSelected
-                    ? 'bg-slate-900 text-white shadow-md'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:border-brand-500 hover:text-brand-600'
+                    ? 'bg-slate-950 text-white border-brand-500 shadow-lg ring-2 ring-brand-500/25 scale-[1.02]'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-brand-500 hover:text-brand-600 hover:shadow-xs'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isSelected ? 'text-brand-400' : 'text-slate-500'}`} />
-                <span>{srv.number}. {srv.title}</span>
+                <div
+                  className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 ${
+                    isSelected ? 'bg-brand-500/20 text-brand-400' : 'bg-slate-100 text-slate-500'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                </div>
+                <span>
+                  {srv.number}. {srv.title}
+                </span>
               </button>
             );
           })}
         </div>
 
-        {/* Active Service Showcase Card (Slider / Picture & 2-4 Lines text) */}
+        {/* ACTIVE SERVICE SHOWCASE CARD WITH PHOTOREALISTIC IMAGES */}
         <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 transition-all">
-          {/* Visual Work Picture / Diagram (5 Cols) */}
-          <div className="lg:col-span-5 relative bg-slate-900 p-6 flex flex-col justify-between overflow-hidden">
-            <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-              <span className="px-3 py-1 bg-brand-500 text-slate-950 font-black text-xs rounded-full uppercase tracking-wider">
+          {/* Photorealistic High-Definition Work Picture (5 Cols) */}
+          <div className="lg:col-span-5 relative bg-slate-950 p-5 sm:p-6 flex flex-col justify-between overflow-hidden">
+            {/* Top Badge */}
+            <div className="flex items-center justify-between gap-2 mb-4 z-10">
+              <span className="px-3 py-1 bg-brand-500 text-slate-950 font-black text-xs rounded-full uppercase tracking-wider shadow-md">
                 {currentService.tagline}
+              </span>
+              <span className="text-xs font-mono font-bold text-slate-400">
+                0{activeServiceIdx + 1} / 0{coreServices.length}
               </span>
             </div>
 
-            {/* Service Work Graphic */}
-            <div className="relative my-auto py-4 flex items-center justify-center">
+            {/* Premium Photography Container */}
+            <div className="relative my-auto w-full aspect-16/10 rounded-2xl overflow-hidden shadow-2xl border border-slate-800 bg-slate-900 group">
               <img
                 src={currentService.image}
                 alt={currentService.alt}
-                width={500}
-                height={333}
-                className="w-full h-auto max-h-72 object-contain drop-shadow-xl rounded-2xl"
+                width={800}
+                height={500}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-3 left-3 right-3 text-white">
+                <span className="text-[11px] font-semibold text-brand-300 drop-shadow-sm flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-brand-400" />
+                  Verified On-Site Work | Islamabad & Rawalpindi
+                </span>
+              </div>
             </div>
 
             {/* Slider navigation buttons */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-800 text-xs text-slate-400">
-              <span>Service {activeServiceIdx + 1} of {coreServices.length}</span>
+            <div className="flex items-center justify-between pt-4 mt-4 border-t border-slate-800 text-xs text-slate-400">
+              <span>Service #{currentService.number} Details</span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -467,7 +566,7 @@ export default function ServicesClient() {
               </div>
 
               {/* STRICT 2-4 LINES OF HUMANIZED SOLID TEXT */}
-              <div className="bg-slate-50 border-l-4 border-brand-500 p-4 rounded-r-2xl space-y-2">
+              <div className="bg-slate-50 border-l-4 border-brand-500 p-4 sm:p-5 rounded-r-2xl space-y-2">
                 {currentService.lines.map((line, idx) => (
                   <p key={idx} className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                     {line}
@@ -509,114 +608,9 @@ export default function ServicesClient() {
             </div>
           </div>
         </div>
-
-        {/* 7 Services Grid Cards for Full Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4">
-          {coreServices.map((srv, idx) => {
-            const Icon = srv.icon;
-            const isSelected = idx === activeServiceIdx;
-            return (
-              <div
-                key={srv.id}
-                onClick={() => setActiveServiceIdx(idx)}
-                className={`cursor-pointer rounded-2xl p-5 border transition-all flex flex-col justify-between ${
-                  isSelected
-                    ? 'bg-amber-50/50 border-brand-500 shadow-md ring-2 ring-brand-500/20'
-                    : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm'
-                }`}
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-900 flex items-center justify-center font-bold">
-                      <Icon className="w-5 h-5 text-brand-600" />
-                    </div>
-                    <span className="text-[11px] font-black text-slate-400">#{srv.number}</span>
-                  </div>
-                  <h4 className="text-sm font-black text-slate-900 line-clamp-1">{srv.title}</h4>
-                  <p className="text-[11px] text-slate-600 line-clamp-3 leading-relaxed">
-                    {srv.lines[0]}
-                  </p>
-                </div>
-
-                <div className="pt-4 flex items-center justify-between text-xs font-bold text-brand-600 mt-2">
-                  <span>{isSelected ? 'Viewing' : 'Inspect Details'}</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </section>
 
-      {/* 3. OUR REPAIR SERVICES / WE REPAIR (FROM VISITING CARD & AUDIO 1) */}
-      <section className="bg-slate-900 text-white rounded-3xl p-6 sm:p-10 md:p-12 border border-slate-800 space-y-8 relative overflow-hidden">
-        <div className="relative z-10 space-y-3 max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400/20 text-brand-400 text-xs font-bold rounded-full uppercase tracking-wider">
-            <Wrench className="w-3.5 h-3.5" />
-            <span>Doorstep Appliance Troubleshooting</span>
-          </div>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
-            Our Repair Services (We Repair)
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Fast doorstep diagnostics and genuine replacement parts across Islamabad and Rawalpindi. We repair all residential and office electrical appliances with testing warranty.
-          </p>
-        </div>
-
-        {/* 10 Appliances Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 relative z-10">
-          {repairAppliances.map((appliance, aIdx) => (
-            <div
-              key={aIdx}
-              className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-brand-500/50 hover:bg-slate-950 transition-all group"
-            >
-              <div className="space-y-2">
-                <div className="text-2xl">{appliance.icon}</div>
-                <h4 className="text-xs font-bold text-white group-hover:text-brand-400 transition-colors">
-                  {appliance.name}
-                </h4>
-                <p className="text-[11px] text-slate-400 leading-tight">
-                  {appliance.desc}
-                </p>
-              </div>
-
-              <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => handleBookNow(`Repair: ${appliance.name}`)}
-                  className="text-[11px] font-bold text-brand-400 hover:text-brand-300 underline"
-                >
-                  Book Repair
-                </button>
-                <a
-                  href={whatsappInquiryUrl(`Repair ${appliance.name}`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-emerald-400 transition-colors"
-                  title="WhatsApp Inquiry"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="relative z-10 pt-2 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-400 border-t border-slate-800">
-          <span>
-            Need urgent repair for an appliance not listed here? Call our master technician directly.
-          </span>
-          <a
-            href={`tel:${settings.helpline_phone}`}
-            className="text-brand-400 font-bold hover:underline flex items-center gap-1"
-          >
-            <PhoneCall className="w-3.5 h-3.5" />
-            <span>Direct Call: {settings.helpline_phone}</span>
-          </a>
-        </div>
-      </section>
-
-      {/* 4. AUTHORIZED BRANDS (FROM VISITING CARD) */}
+      {/* 3. AUTHORIZED BRANDS */}
       <section className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold text-brand-600 uppercase tracking-widest">
@@ -653,7 +647,7 @@ export default function ServicesClient() {
         </div>
       </section>
 
-      {/* 5. INTERACTIVE APPOINTMENT / INQUIRY BOOKING FORM */}
+      {/* 4. INTERACTIVE APPOINTMENT / INQUIRY BOOKING FORM */}
       <section
         id="book-service"
         className="bg-white rounded-3xl p-6 sm:p-10 md:p-12 border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
