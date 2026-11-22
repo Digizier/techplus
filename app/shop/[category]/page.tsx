@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import React from 'react';
-import { getAllCategorySlugs, getCategoryBySlug } from '@/lib/db';
+import { getAllCategorySlugs, getCategoryBySlug, getProducts, getCategories } from '@/lib/db';
 import { resolveImageUrl } from '@/lib/image-utils';
+import { getCategoryGuide } from '@/lib/category-content';
 import CategoryShopClient from './CategoryShopClient';
 
 export async function generateMetadata({
@@ -10,20 +11,11 @@ export async function generateMetadata({
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
   const resolvedParams = await params;
+  const guide = getCategoryGuide(resolvedParams.category);
   const category = await getCategoryBySlug(resolvedParams.category);
 
-  const formattedName = category
-    ? category.name
-    : resolvedParams.category
-        .split('-')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ');
-
-  const title = `${formattedName} in Pakistan | Heavy Duty - Techplus.pk`;
-  const description =
-    category?.description && category.description.trim() !== ''
-      ? category.description
-      : `Explore authentic ${formattedName} with 100% pure copper motor, official warranty, and fast cash on delivery across Islamabad, Rawalpindi & Pakistan.`;
+  const title = guide.metaTitle;
+  const description = guide.metaDescription;
   const pageUrl = `https://techplus.pk/shop/${resolvedParams.category}`;
   const imageUrl = category?.image_url
     ? resolveImageUrl(category.image_url, { absolute: true })
@@ -44,7 +36,7 @@ export async function generateMetadata({
       images: [
         {
           url: imageUrl,
-          alt: formattedName,
+          alt: guide.heroHeading,
         },
       ],
     },
@@ -67,6 +59,7 @@ export async function generateStaticParams() {
       { category: 'hand-tools' },
       { category: 'electrical' },
       { category: 'cordless-power-tools' },
+      { category: 'drill-machines' },
       { category: 'used-branded-tools' },
     ];
   }
@@ -81,13 +74,22 @@ export default async function CategoryPage({
   params: Promise<{ category: string }>;
 }) {
   const resolvedParams = await params;
-  const category = await getCategoryBySlug(resolvedParams.category);
-  const catName = category
-    ? category.name
-    : resolvedParams.category
-        .split('-')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ');
+  const guide = getCategoryGuide(resolvedParams.category);
+
+  // Pre-render initial products & categories on the server for Google Crawlers
+  const [category, productsRes, allCategories, fallbackProductsRes] = await Promise.all([
+    getCategoryBySlug(resolvedParams.category),
+    getProducts({
+      page: 1,
+      limit: 8,
+      categorySlug: resolvedParams.category,
+      sortBy: 'newest',
+    }),
+    getCategories(),
+    getProducts({ page: 1, limit: 4, sortBy: 'newest' }),
+  ]);
+
+  const catName = category?.name || guide.heroHeading;
 
   const breadcrumbSchema = {
     '@context': 'https://schema.org',
@@ -119,7 +121,7 @@ export default async function CategoryPage({
     '@type': 'CollectionPage',
     name: `${catName} - Techplus.pk`,
     url: `https://techplus.pk/shop/${resolvedParams.category}`,
-    description: `Shop authentic ${catName} at Techplus.pk with cash on delivery across Pakistan.`,
+    description: guide.metaDescription,
   };
 
   return (
@@ -132,7 +134,14 @@ export default async function CategoryPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
-      <CategoryShopClient categorySlug={resolvedParams.category} />
+      <CategoryShopClient
+        categorySlug={resolvedParams.category}
+        initialCategory={category}
+        initialProducts={productsRes.products}
+        initialTotalCount={productsRes.totalCount}
+        initialCategories={allCategories}
+        fallbackProducts={fallbackProductsRes.products}
+      />
     </>
   );
 }

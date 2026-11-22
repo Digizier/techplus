@@ -21,13 +21,16 @@ export async function generateMetadata({
 
   const shareImageUrl = getProductShareImageUrl(product);
   const formattedPrice = `Rs. ${product.price.toLocaleString()}`;
-  const cleanSnippet =
-    product.short_description &&
-    product.short_description.trim() !== 'Description' &&
-    product.short_description.trim() !== ''
-      ? product.short_description.replace(/<[^>]*>/g, '').trim()
-      : 'Shop genuine copper winding power tools, chainsaw converters & spare parts with nationwide cash on delivery across Pakistan.';
-  const pageDescription = `${formattedPrice} - ${cleanSnippet}`;
+  let cleanSnippet = product.short_description
+    ? product.short_description.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
+    : '';
+
+  if (!cleanSnippet || cleanSnippet.toLowerCase() === 'description' || cleanSnippet.length < 20) {
+    cleanSnippet = `${product.title} with pure copper build. Available with nationwide Cash on Delivery and open parcel inspection.`;
+  }
+
+  // Format: What it is + key spec + price (Audit Fix #9)
+  const pageDescription = `Buy ${product.title} at ${formattedPrice}. ${cleanSnippet}`.slice(0, 158);
   const pageUrl = `https://techplus.pk/product/${product.slug}`;
 
   return {
@@ -65,8 +68,16 @@ export async function generateStaticParams() {
       { slug: '1078' },
       { slug: 'cordless-drill-18v-bnktop-russian-brand-10mm' },
       { slug: 'electric-drill-machine-drilling-machine-with-reverse-function-slow-fast-speed-electric-screw-driver-function-copper-copy' },
+      { slug: 'pure-copper-winding-710w-electric-drill-machine-13mm-hammer-impact-drill-machine-two-way-rotation-screw-driver-drill-machine-screwdriver-drill' },
+      { slug: 'professional-quality-26mm-rotary-hammer-hilti-drill-3-function-960w-pure-copper-winding' },
+      { slug: 'electric-polisher-machine-with-reverse-function-slow-fast-speed-electric-screw-driver-function-copper' },
       { slug: '6-inch-electric-drill-to-electric-chain-saw-adapter-home-portable-chainsaw-wood-plastic-metal-cutting-woodworking-trimming-tool' },
+      { slug: 'drill-to-saw-adapter-anti-slip-portable-light-auxiliary-handle-easy-assembly-saw-conversion-head-for-woodwork' },
+      { slug: 'electric-drill-modified-to-reciprocating-saw-adapter-screwdriver-conversion-head-for-wood-metal-cutting-tool-with-saw-blade' },
+      { slug: '10mm-electric-drill-conversion-angle-grinder-connecting-rod-for-cutting-disc-polishing-wheel-installation-adapter-accessories' },
       { slug: 'multi-function-plier' },
+      { slug: 'universal-wire-cutter-diagonal-pliers-crimping-pliers-needle-nose-pliers-multifunctional-hardware-hand-tools-electrician' },
+      { slug: 'angle-shear-45-degree-to-135-degree-miter-cutter-hand-shear-multifunctional-pvc-pe-plastic-pipe-scissors-with-replace-blades' },
     ];
   }
   return slugs.map((slug) => ({ slug }));
@@ -157,7 +168,7 @@ export default async function ProductPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
       )}
-      <ProductDetailClient slug={resolvedParams.slug} />
+      <ProductDetailClient slug={resolvedParams.slug} initialProduct={product} />
     </>
   );
 }

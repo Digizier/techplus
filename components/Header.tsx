@@ -197,6 +197,18 @@ export default function Header() {
               All Products
             </Link>
             <Link
+              href="/shop/drill-machines"
+              className="py-3 px-3 hover:text-brand-600 transition-colors"
+            >
+              Drill Machines
+            </Link>
+            <Link
+              href="/shop/cordless-power-tools"
+              className="py-3 px-3 hover:text-brand-600 transition-colors"
+            >
+              Cordless Tools
+            </Link>
+            <Link
               href="/shop/power-tools"
               className="py-3 px-3 hover:text-brand-600 transition-colors"
             >

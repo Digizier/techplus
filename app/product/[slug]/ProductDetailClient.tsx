@@ -24,53 +24,71 @@ import { useCart } from '@/lib/cart-context';
 import { useSettings } from '@/lib/settings-context';
 import ProductCard from '@/components/ProductCard';
 
-export default function ProductDetailClient({ slug }: { slug: string }) {
+export default function ProductDetailClient({
+  slug,
+  initialProduct,
+}: {
+  slug: string;
+  initialProduct?: Product | null;
+}) {
   const router = useRouter();
   const { addToCart } = useCart();
   const { settings } = useSettings();
 
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<Product | null>(initialProduct || null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<string>(
+    initialProduct
+      ? resolveImageUrl(
+          initialProduct.thumbnail_url || (initialProduct.images && initialProduct.images[0]) || ''
+        )
+      : ''
+  );
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialProduct);
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
-    async function loadProduct() {
-      setLoading(true);
-      const data = await getProductBySlug(slug);
-      if (data) {
-        setProduct(data);
-        const initialImg = resolveImageUrl(
-          data.thumbnail_url || (data.images && data.images[0]) || ''
-        );
-        setSelectedImage(initialImg);
+    async function loadData() {
+      let currentProd = product;
+      if (!currentProd) {
+        setLoading(true);
+        currentProd = await getProductBySlug(slug);
+        if (currentProd) {
+          setProduct(currentProd);
+          setSelectedImage(
+            resolveImageUrl(
+              currentProd.thumbnail_url || (currentProd.images && currentProd.images[0]) || ''
+            )
+          );
+        }
+        setLoading(false);
+      }
 
+      if (currentProd) {
         // Fetch related products from same category (reliably 4 items)
         let relatedList: Product[] = [];
-        if (data.category_id) {
+        if (currentProd.category_id) {
           const relatedRes = await getProducts({
             limit: 6,
-            categoryId: data.category_id,
+            categoryId: currentProd.category_id,
           });
-          relatedList = relatedRes.products.filter((p) => p.id !== data.id);
+          relatedList = relatedRes.products.filter((p) => p.id !== currentProd!.id);
         }
 
         // If fewer than 4 related items, backfill with top products
         if (relatedList.length < 4) {
           const fallbackRes = await getProducts({ limit: 6, sortBy: 'newest' });
-          const existingIds = new Set([data.id, ...relatedList.map((p) => p.id)]);
+          const existingIds = new Set([currentProd.id, ...relatedList.map((p) => p.id)]);
           const backfill = fallbackRes.products.filter((p) => !existingIds.has(p.id));
           relatedList = [...relatedList, ...backfill];
         }
 
         setRelatedProducts(relatedList.slice(0, 4));
       }
-      setLoading(false);
     }
 
-    loadProduct();
+    loadData();
   }, [slug]);
 
   if (loading) {
@@ -318,6 +336,38 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
         </h2>
         <div className="text-xs md:text-sm text-slate-700 leading-relaxed whitespace-pre-line space-y-2">
           {product.description || product.short_description || 'Authentic industrial grade tool with full copper winding.'}
+        </div>
+      </div>
+
+      {/* 3b. SEO H2 Section: Technical Durability & Voltage Resistance */}
+      <div className="bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-xs space-y-4">
+        <h2 className="text-lg md:text-xl font-black text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-emerald-600" />
+          <span>Why Buy From Techplus: Pure Copper Motors & Field Testing</span>
+        </h2>
+        <div className="text-xs md:text-sm text-slate-700 leading-relaxed space-y-3 font-normal">
+          <p>
+            Every power tool and hardware kit we dispatch is bench-inspected by master technicians in our Islamabad workshop. Unlike cheap aluminum-wound alternatives that overheat and burn out during Pakistani summer voltage drops, our equipment uses genuine pure copper field coils, double-insulated armatures, and hardened alloy gearing built to withstand demanding job-site duty.
+          </p>
+          <p>
+            Whether you are drilling reinforced concrete in Bahria Town, routing electrical conduits across G-Sector commercial plazas, or maintaining industrial plant machinery, Techplus tools deliver sustained torque without unexpected stator failure.
+          </p>
+        </div>
+      </div>
+
+      {/* 3c. SEO H2 Section: Delivery & Warranty Assurance */}
+      <div className="bg-white rounded-3xl p-6 md:p-10 border border-slate-100 shadow-xs space-y-4">
+        <h2 className="text-lg md:text-xl font-black text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+          <Truck className="w-5 h-5 text-brand-600" />
+          <span>Nationwide Cash on Delivery with Open Parcel Inspection & 7-Day Warranty</span>
+        </h2>
+        <div className="text-xs md:text-sm text-slate-700 leading-relaxed space-y-3 font-normal">
+          <p>
+            We eliminate online shopping hesitation across Pakistan with our transparent <strong>open parcel policy</strong>. When the courier rider delivers your package anywhere from Karachi to Peshawar, you have the full right to open the flyer, verify the tool, inspect the accessories, and check physical condition before handing over cash.
+          </p>
+          <p>
+            All products are backed by our 7-day doorstep replacement warranty and direct technical support from our main service workshop at Shop 07-B Chinar Plaza, G-6/1-1, Islamabad.
+          </p>
         </div>
       </div>
 

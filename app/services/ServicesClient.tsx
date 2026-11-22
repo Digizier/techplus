@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { createServiceInquiry } from '@/lib/db';
 import { useSettings } from '@/lib/settings-context';
+import GoogleReviews from '@/components/GoogleReviews';
 
 // Continuous smooth auto-scrolling hook matching home page category menu
 function useContinuousScroll(
@@ -647,7 +648,10 @@ export default function ServicesClient() {
         </div>
       </section>
 
-      {/* 4. INTERACTIVE APPOINTMENT / INQUIRY BOOKING FORM */}
+      {/* 4. Verified Google Customer Reviews (Fix 6 from Audit Report) */}
+      <GoogleReviews />
+
+      {/* 5. INTERACTIVE APPOINTMENT / INQUIRY BOOKING FORM */}
       <section
         id="book-service"
         className="bg-white rounded-3xl p-6 sm:p-10 md:p-12 border border-slate-200 shadow-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"

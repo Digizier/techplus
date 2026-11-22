@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import HeroBanner from '@/components/HeroBanner';
 import ProductCard from '@/components/ProductCard';
+import GoogleReviews from '@/components/GoogleReviews';
 import { ProductCardSkeleton } from '@/components/SkeletonLoader';
 import { getProducts, getCategories } from '@/lib/db';
 import { Product, Category } from '@/lib/types';
@@ -157,9 +158,9 @@ export default function HomePage() {
     };
   }, []);
 
-  // Filter ONLY main parent categories that have show_on_home !== false
+  // Filter main parent categories and high-demand drill machines for home navigation
   const homeCategories = categories.filter(
-    (c) => !c.parent_id && c.show_on_home !== false
+    (c) => (!c.parent_id || c.slug === 'drill-machines') && c.show_on_home !== false
   );
 
   // Repeat items for seamless continuous auto-scroll loop
@@ -298,7 +299,95 @@ export default function HomePage() {
       {/* 1. Dynamic Hero Banner (Pure Responsive Image - No text overlay) */}
       <HeroBanner />
 
-      {/* 2. Top Categories Section (Continuous Smooth Auto-Scroll) */}
+      {/* 2. SERVICES & LICENSED ELECTRICIAN SHOWCASE (Moved Up Directly Below Hero - Fix 5, Fix 7 & Fix 8) */}
+      <section className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 text-white relative overflow-hidden shadow-xl">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+          <div className="space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-400/20 text-brand-400 rounded-full text-xs font-black uppercase tracking-wider">
+              <Zap className="w-3.5 h-3.5 fill-current" />
+              <span>ISLAMABAD &amp; RAWALPINDI ENGINEERING DIVISION</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">
+              Licensed Electrician, Solar EPC &amp; AC Services in Islamabad
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+              20+ years of electrical mastery in Islamabad &amp; Rawalpindi. From urgent short-circuit emergencies and full house rewiring to certified solar net-metering and AC chemical wash.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            <Link
+              href="/services"
+              className="px-5 py-3 bg-brand-500 hover:bg-brand-600 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2"
+            >
+              <span>Book An Electrician / Service</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <a
+              href={`tel:${settings.helpline_phone}`}
+              className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm rounded-xl border border-slate-700 transition-colors flex items-center gap-2"
+            >
+              <PhoneCall className="w-4 h-4 text-brand-400" />
+              <span>Helpline: {settings.helpline_phone}</span>
+            </a>
+          </div>
+        </div>
+
+        {/* 4 Fast Service Highlights */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 relative z-10">
+          <Link
+            href="/services"
+            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+          >
+            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
+              ⚡ Licensed Electrician (20+ Yrs)
+            </span>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Distribution boards, 3-phase balancing &amp; 24/7 short-circuit visits.
+            </p>
+          </Link>
+
+          <Link
+            href="/services"
+            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+          >
+            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
+              ☀️ Solar Installation (Since 2018)
+            </span>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Tier-1 Jinko panels, GoodWe inverters &amp; IESCO net-metering.
+            </p>
+          </Link>
+
+          <Link
+            href="/services"
+            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+          >
+            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
+              ❄️ AC Master Chemical Wash
+            </span>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              High-pressure jet wash, R410A gas refill &amp; inverter PCB fixes.
+            </p>
+          </Link>
+
+          <Link
+            href="/services"
+            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+          >
+            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
+              📹 CCTV, Biometric &amp; PABX
+            </span>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Hikvision 4K IP cameras with mobile view &amp; Cat6 structured cabling.
+            </p>
+          </Link>
+        </div>
+      </section>
+
+      {/* 3. Top Categories Section (Continuous Smooth Auto-Scroll) */}
       <section className="relative">
         <div className="flex items-end justify-between mb-3 md:mb-4">
           <div>
@@ -369,7 +458,9 @@ export default function HomePage() {
                 {cat.name}
               </h3>
               <span className="text-[10px] text-slate-400 font-medium">
-                {cat.subcategories?.length || 0} sub-models
+                {cat.subcategories && cat.subcategories.length > 0
+                  ? `${cat.subcategories.length} Models`
+                  : 'Pure Copper'}
               </span>
             </Link>
           ))}
@@ -510,40 +601,8 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* 5. Services Spotlight (AC, Solar, Appliances) */}
-      <section className="bg-amber-500/10 border border-amber-500/30 rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-8">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
-          <div className="space-y-1.5 sm:space-y-2 text-center md:text-left">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-500 text-slate-950 rounded-full text-[10px] md:text-xs font-black uppercase">
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              <span>ISLAMABAD &amp; RAWALPINDI SERVICES</span>
-            </div>
-            <h2 className="text-lg sm:text-xl md:text-2xl font-black text-slate-900 leading-tight">
-              Looking for AC Service or Solar System Installation?
-            </h2>
-            <p className="text-xs md:text-sm text-slate-700 max-w-xl">
-              Get high-pressure water gun AC cleaning, appliance troubleshooting, and certified GoodWe solar system setups with verified technicians and warranty coverage.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row md:flex-col gap-2 shrink-0 w-full sm:w-auto">
-            <Link
-              href="/services"
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-slate-950 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition-colors text-center"
-            >
-              <span>Book A Service</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <a
-              href={`tel:${settings.helpline_phone}`}
-              className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-white hover:bg-slate-50 text-slate-900 font-bold text-xs rounded-xl border border-slate-200 shadow-xs transition-colors text-center"
-            >
-              <PhoneCall className="w-4 h-4 text-brand-600" />
-              <span>{settings.helpline_phone}</span>
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* 5. Verified Google Customer Reviews (Fix 6 from Audit Report) */}
+      <GoogleReviews />
 
       {/* 6. Authorized Brands - CONTINUOUS AUTO-SCROLL AS REQUESTED */}
       <section className="bg-white rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 border border-slate-100 shadow-2xs overflow-hidden">
