@@ -36,3 +36,8 @@ next-env.d.ts
 REFERENCE DATA/
 extract*.json
 scripts/check-db.js
+*.exe
+.wrangler/
+scripts/extract-video-report.py
+scripts/parse-ocr.py
+scripts/verify-seo-updates.js

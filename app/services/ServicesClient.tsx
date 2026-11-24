@@ -508,6 +508,8 @@ export default function ServicesClient() {
                 alt={currentService.alt}
                 width={800}
                 height={500}
+                style={{ aspectRatio: '16 / 10' }}
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />

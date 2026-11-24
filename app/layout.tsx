@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { CartProvider } from '@/lib/cart-context';
 import { SettingsProvider } from '@/lib/settings-context';
@@ -64,6 +65,13 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.png" />
         <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLM Documentation" />
+        
+        {/* Preconnect to Google Services for Faster Script & Analytics Loading */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
         {/* Google Sitelinks, WebSite, Organization & LocalBusiness Structured Data */}
         <script
           type="application/ld+json"
@@ -238,8 +246,46 @@ export default function RootLayout({
 })();`,
           }}
         />
+
+        {/* Google Tag Manager (Non-blocking afterInteractive strategy) */}
+        <Script
+          id="google-tag-manager"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-N57RCG2X');`,
+          }}
+        />
+
+        {/* Google Analytics 4 (GA4: G-L1VZ2V0VS2) */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-L1VZ2V0VS2"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-L1VZ2V0VS2', { page_path: window.location.pathname });`,
+          }}
+        />
       </head>
       <body>
+        {/* Google Tag Manager (noscript fallback) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-N57RCG2X"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
         <SettingsProvider>
           <CartProvider>
             <LayoutShell>{children}</LayoutShell>

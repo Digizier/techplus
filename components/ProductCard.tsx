@@ -70,7 +70,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           alt={`${product.title} - Techplus Pakistan Power Tools`}
           width={300}
           height={300}
+          style={{ aspectRatio: '1 / 1' }}
           loading="lazy"
+          decoding="async"
           onLoad={() => setImageLoaded(true)}
           className={`max-h-full max-w-full object-contain transform group-hover:scale-105 transition-transform duration-300 ${
             imageLoaded ? 'opacity-100' : 'opacity-0'

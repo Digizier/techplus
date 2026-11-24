@@ -7,15 +7,28 @@ import { Banner } from '@/lib/types';
 import { getBanners } from '@/lib/db';
 import { BannerSkeleton } from './SkeletonLoader';
 
+const DEFAULT_BANNERS: Banner[] = [
+  {
+    id: 'default-hero-banner-1',
+    title: 'Heavy Duty Pure Copper Power Tools, Chainsaw Converters & Workshop Equipment Pakistan',
+    desktop_image_url: '/images/banners/banner-1.svg',
+    mobile_image_url: '/images/banners/banner-1.svg',
+    link_url: '/shop/power-tools',
+    button_text: 'Explore Power Tools',
+    display_order: 1,
+    is_active: true,
+  },
+];
+
 export default function HeroBanner() {
-  const [banners, setBanners] = useState<Banner[]>([]);
+  const [banners, setBanners] = useState<Banner[]>(DEFAULT_BANNERS);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   const fetchBanners = () => {
     getBanners().then((data) => {
-      setBanners(data);
-      setLoading(false);
+      if (data && data.length > 0) {
+        setBanners(data);
+      }
     });
   };
 
@@ -40,26 +53,7 @@ export default function HeroBanner() {
     return () => clearInterval(interval);
   }, [banners.length]);
 
-  if (loading) {
-    return <BannerSkeleton />;
-  }
-
-  const displayBanners: Banner[] =
-    banners.length > 0
-      ? banners
-      : [
-          {
-            id: 'fallback-1',
-            title: '',
-            desktop_image_url: '/images/banners/banner-1.svg',
-            mobile_image_url: '/images/banners/banner-1.svg',
-            link_url: '/shop/power-tools',
-            button_text: '',
-            display_order: 1,
-            is_active: true,
-          },
-        ];
-
+  const displayBanners: Banner[] = banners.length > 0 ? banners : DEFAULT_BANNERS;
   const currentBanner = displayBanners[currentIndex] || displayBanners[0];
 
   return (
@@ -79,6 +73,8 @@ export default function HeroBanner() {
             alt={currentBanner.title ? `${currentBanner.title} - Techplus.pk Heavy Duty Tools` : 'Techplus.pk - Heavy Duty Power Tools, Chainsaw Converters & Repair Services in Pakistan'}
             width={1920}
             height={640}
+            style={{ aspectRatio: '1920 / 640' }}
+            decoding="async"
             className="w-full h-full object-contain md:object-cover transition-all duration-700 select-none"
             loading="eager"
             fetchPriority="high"
