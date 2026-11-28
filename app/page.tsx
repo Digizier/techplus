@@ -299,90 +299,94 @@ export default function HomePage() {
       {/* 1. Dynamic Hero Banner (Pure Responsive Image - No text overlay) */}
       <HeroBanner />
 
-      {/* 2. SERVICES & LICENSED ELECTRICIAN SHOWCASE (Moved Up Directly Below Hero - Fix 5, Fix 7 & Fix 8) */}
-      <section className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-8 text-white relative overflow-hidden shadow-xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-400/20 text-brand-400 rounded-full text-xs font-black uppercase tracking-wider">
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              <span>ISLAMABAD &amp; RAWALPINDI ENGINEERING DIVISION</span>
+      {/* 2. COMPACT SERVICES & LICENSED ELECTRICIAN DETAILS (Voice Note 5: Clean concise details, not an oversized banner) */}
+      <section className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-100 text-amber-800 rounded-full text-[11px] font-black uppercase tracking-wider">
+                <Zap className="w-3 h-3 fill-current" />
+                <span>Islamabad &amp; Rawalpindi Division</span>
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <Clock className="w-3 h-3" />
+                <span>15–30 Min Response</span>
+              </span>
             </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">
+            <h2 className="text-base sm:text-xl font-black text-slate-900 leading-snug">
               Licensed Electrician, Solar EPC &amp; AC Services in Islamabad
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
-              20+ years of electrical mastery in Islamabad &amp; Rawalpindi. From urgent short-circuit emergencies and full house rewiring to certified solar net-metering and AC chemical wash.
+            <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
+              20+ years electrical experience &amp; solar installation since 2018 — same-day doorstep visits for rewiring, DB boards, AC jet wash, plumbing, CCTV &amp; appliance repairs.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <Link
               href="/services"
-              className="px-5 py-3 bg-brand-500 hover:bg-brand-600 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2"
+              className="px-4 py-2.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-black text-xs rounded-xl shadow-xs transition-all flex items-center gap-1.5"
             >
-              <span>Book An Electrician / Service</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Book Service Now</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <a
               href={`tel:${settings.helpline_phone}`}
-              className="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs sm:text-sm rounded-xl border border-slate-700 transition-colors flex items-center gap-2"
+              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs sm:text-sm rounded-xl transition-colors flex items-center gap-1.5"
             >
-              <PhoneCall className="w-4 h-4 text-brand-400" />
-              <span>Helpline: {settings.helpline_phone}</span>
+              <PhoneCall className="w-3.5 h-3.5 text-brand-400" />
+              <span>{settings.helpline_phone}</span>
             </a>
           </div>
         </div>
 
-        {/* 4 Fast Service Highlights */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 relative z-10">
+        {/* Compact Quick-Jump Service Details Row */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100">
           <Link
-            href="/services"
-            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+            href="/services#service-electrical"
+            className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-amber-50/70 border border-slate-200/80 hover:border-brand-400 transition-all group"
           >
-            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
+            <span className="text-xs font-bold text-slate-900 group-hover:text-brand-700 block truncate">
               ⚡ Licensed Electrician (20+ Yrs)
             </span>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Distribution boards, 3-phase balancing &amp; 24/7 short-circuit visits.
-            </p>
+            <span className="text-[11px] text-slate-500 block truncate">
+              DB box, 3-phase &amp; short circuits
+            </span>
           </Link>
 
           <Link
-            href="/services"
-            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+            href="/services#service-solar"
+            className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-amber-50/70 border border-slate-200/80 hover:border-brand-400 transition-all group"
           >
-            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
+            <span className="text-xs font-bold text-slate-900 group-hover:text-brand-700 block truncate">
               ☀️ Solar Installation (Since 2018)
             </span>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Tier-1 Jinko panels, GoodWe inverters &amp; IESCO net-metering.
-            </p>
+            <span className="text-[11px] text-slate-500 block truncate">
+              Jinko, GoodWe &amp; IESCO net-metering
+            </span>
           </Link>
 
           <Link
-            href="/services"
-            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+            href="/services#service-ac"
+            className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-amber-50/70 border border-slate-200/80 hover:border-brand-400 transition-all group"
           >
-            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
-              ❄️ AC Master Chemical Wash
+            <span className="text-xs font-bold text-slate-900 group-hover:text-brand-700 block truncate">
+              ❄️ AC Jet Wash &amp; Gas Refill
             </span>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              High-pressure jet wash, R410A gas refill &amp; inverter PCB fixes.
-            </p>
+            <span className="text-[11px] text-slate-500 block truncate">
+              Chemical cleaning &amp; inverter PCB
+            </span>
           </Link>
 
           <Link
-            href="/services"
-            className="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-brand-500/50 transition-all group"
+            href="/services#repair-services"
+            className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-amber-50/70 border border-slate-200/80 hover:border-brand-400 transition-all group"
           >
-            <span className="text-xs font-bold text-white group-hover:text-brand-400 block mb-1">
-              📹 CCTV, Biometric &amp; PABX
+            <span className="text-xs font-bold text-slate-900 group-hover:text-brand-700 block truncate">
+              🛠️ Home Appliance Repairs
             </span>
-            <p className="text-[11px] text-slate-400 leading-relaxed">
-              Hikvision 4K IP cameras with mobile view &amp; Cat6 structured cabling.
-            </p>
+            <span className="text-[11px] text-slate-500 block truncate">
+              Washer, geyser, fridge, iron &amp; oven
+            </span>
           </Link>
         </div>
       </section>
